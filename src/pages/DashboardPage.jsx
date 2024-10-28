@@ -1,5 +1,5 @@
 import { IoTimeOutline } from "react-icons/io5";
-import Navbar from "../../components/templates/Navbar";
+import Navbar from "../components/templates/Navbar";
 
 const DashboardPage = () => {
   return (
