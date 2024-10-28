@@ -28,7 +28,7 @@ const LoginPage = () => {
       >
         <div className="card-body pt-5 px-5 pb-5">
           <div className="text-center">
-            <Image src={"./public/data/logo.jpeg"} width={"200px"} />
+            <Image src={"/data/logo.jpeg"} width={"200px"} />
           </div>
           <div className="text-center fs-5 my-5">
             <span className="fw-medium">PT. SEMBILAN SAMUDRA PERKASA</span>
