@@ -14,12 +14,12 @@ const Navbar = ({ children, title }) => {
   return (
     <div>
       <header className="navbar sticky-top bg-primary flex-md-nowrap p-0">
-        <a
+        <Link
+          to={"/"}
           className="bg-info col-md-3 col-lg-2 me-0 px-3 fs-6 text-white text-center"
-          href="#"
         >
           <Image src={"/data/logo.png"} width={"150px"} style={"my-3"} />
-        </a>
+        </Link>
         <a
           className="col-md-8 col-lg-8 px-4 fs-3 text-white text-start text-decoration-none fw-bold"
           href="#"
