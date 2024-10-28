@@ -3,7 +3,7 @@ import Navbar from "../../components/templates/Navbar";
 
 const DashboardPage = () => {
   return (
-    <Navbar>
+    <Navbar title="Dashboard">
       <div className="shadow rounded-3 bg-white p-4 pb-2">
         <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
           <h1 className="h4">Beranda</h1>

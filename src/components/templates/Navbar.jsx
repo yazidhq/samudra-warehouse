@@ -8,7 +8,7 @@ import { CiLogout } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import { useLocation } from "react-router-dom";
 
-const Navbar = ({ children }) => {
+const Navbar = ({ children, title }) => {
   const location = useLocation();
 
   return (
@@ -24,7 +24,7 @@ const Navbar = ({ children }) => {
           className="col-md-8 col-lg-8 px-4 fs-3 text-white text-start text-decoration-none fw-bold"
           href="#"
         >
-          Dashboard
+          {title}
         </a>
         <a
           className="col-md-3 col-lg-2 px-4 fs-6 text-white text-end text-decoration-none"
