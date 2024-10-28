@@ -14,7 +14,7 @@ const LoginPage = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundImage: `url("./public/data/bg-login.png")`,
+          backgroundImage: `url("/data/bg-login.png")`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           filter: "blur(15px)",
