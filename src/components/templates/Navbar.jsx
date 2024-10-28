@@ -6,7 +6,7 @@ import { FaRegFolderClosed } from "react-icons/fa6";
 import Button from "../../components/Button";
 import { CiLogout } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = ({ children, title }) => {
   const location = useLocation();
@@ -54,17 +54,17 @@ const Navbar = ({ children, title }) => {
                       location.pathname === "/" ? "bg-primary rounded-2" : ""
                     }`}
                   >
-                    <a
+                    <Link
                       className={`nav-link d-flex align-items-center gap-2 ${
                         location.pathname === "/"
                           ? "text-white"
                           : "text-primary"
                       }`}
-                      href="#"
+                      to={"/"}
                     >
                       <MdSpaceDashboard className="fs-5" />
                       Beranda
-                    </a>
+                    </Link>
                   </li>
                   <li
                     className={`nav-item py-2 ${
@@ -73,17 +73,17 @@ const Navbar = ({ children, title }) => {
                         : ""
                     }`}
                   >
-                    <a
+                    <Link
                       className={`nav-link d-flex align-items-center gap-2 ${
                         location.pathname === "/master"
                           ? "text-white"
                           : "text-primary"
                       }`}
-                      href="#"
+                      to={"/master"}
                     >
                       <FaDatabase className="fs-5" />
                       Master
-                    </a>
+                    </Link>
                   </li>
                   <li
                     className={`nav-item py-2 ${
@@ -92,17 +92,17 @@ const Navbar = ({ children, title }) => {
                         : ""
                     }`}
                   >
-                    <a
+                    <Link
                       className={`nav-link d-flex align-items-center gap-2 ${
                         location.pathname === "/transaksi"
                           ? "text-white"
                           : "text-primary"
                       }`}
-                      href="#"
+                      to={"/transaksi"}
                     >
                       <IoNewspaper className="fs-5" />
                       Transaksi
-                    </a>
+                    </Link>
                   </li>
                   <li
                     className={`nav-item py-2 ${
@@ -111,17 +111,17 @@ const Navbar = ({ children, title }) => {
                         : ""
                     }`}
                   >
-                    <a
+                    <Link
                       className={`nav-link d-flex align-items-center gap-2 ${
                         location.pathname === "/validasi"
                           ? "text-white"
                           : "text-primary"
                       }`}
-                      href="#"
+                      to={"/validasi"}
                     >
                       <FaRegFolderClosed className="fs-5" />
                       Cek Validasi Stok
-                    </a>
+                    </Link>
                   </li>
                 </ul>
 
