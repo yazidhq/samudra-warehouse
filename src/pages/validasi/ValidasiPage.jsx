@@ -1,6 +1,6 @@
-import Navbar from "../components/templates/Navbar";
-import Button from "../components/Button";
 import { FaPlus } from "react-icons/fa";
+import Navbar from "../../components/templates/Navbar";
+import Button from "../../components/Button";
 
 const ValidasiPage = () => {
   return (

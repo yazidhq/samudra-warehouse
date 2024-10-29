@@ -68,18 +68,18 @@ const Navbar = ({ children, title }) => {
                   </li>
                   <li
                     className={`nav-item py-2 ${
-                      location.pathname === "/master"
+                      location.pathname.includes("/barang")
                         ? "bg-primary rounded-2"
                         : ""
                     }`}
                   >
                     <Link
                       className={`nav-link d-flex align-items-center gap-2 ${
-                        location.pathname === "/master"
+                        location.pathname.includes("/barang")
                           ? "text-white"
                           : "text-primary"
                       }`}
-                      to={"/master"}
+                      to={"/barang"}
                     >
                       <FaDatabase className="fs-5" />
                       Master
@@ -87,14 +87,14 @@ const Navbar = ({ children, title }) => {
                   </li>
                   <li
                     className={`nav-item py-2 ${
-                      location.pathname === "/transaksi"
+                      location.pathname.includes("/transaksi")
                         ? "bg-primary rounded-2"
                         : ""
                     }`}
                   >
                     <Link
                       className={`nav-link d-flex align-items-center gap-2 ${
-                        location.pathname === "/transaksi"
+                        location.pathname.includes("/transaksi")
                           ? "text-white"
                           : "text-primary"
                       }`}
@@ -106,14 +106,14 @@ const Navbar = ({ children, title }) => {
                   </li>
                   <li
                     className={`nav-item py-2 ${
-                      location.pathname === "/validasi"
+                      location.pathname.includes("/validasi")
                         ? "bg-primary rounded-2"
                         : ""
                     }`}
                   >
                     <Link
                       className={`nav-link d-flex align-items-center gap-2 ${
-                        location.pathname === "/validasi"
+                        location.pathname.includes("/validasi")
                           ? "text-white"
                           : "text-primary"
                       }`}

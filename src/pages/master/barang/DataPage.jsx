@@ -1,8 +1,9 @@
-import Navbar from "../components/templates/Navbar";
-import Button from "../components/Button";
+import Navbar from "../../../components/templates/Navbar";
+import Button from "../../../components/Button";
 import { FaPlus } from "react-icons/fa";
-import Table from "../components/Table";
+import Table from "../../../components/Table";
 import { MdDelete, MdOutlineEdit } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 const MasterPage = () => {
   const columns = [
@@ -53,15 +54,17 @@ const MasterPage = () => {
   ];
 
   return (
-    <Navbar title="Master">
+    <Navbar title="Item">
       <div className="shadow rounded-3 bg-white p-4 pb-2">
         <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
           <h1 className="h4">Daftar Item</h1>
           <div className="btn-toolbar mb-2 mb-md-0">
-            <Button color={"primary"}>
-              <FaPlus className="fs-6 mb-1" style={{ marginRight: "10px" }} />
-              Tambah Item
-            </Button>
+            <Link to={"/barang/tambah_barang"}>
+              <Button color={"primary"}>
+                <FaPlus className="fs-6 mb-1" style={{ marginRight: "10px" }} />
+                Tambah Item
+              </Button>
+            </Link>
           </div>
         </div>
         <hr />
