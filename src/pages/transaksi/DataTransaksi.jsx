@@ -1,31 +1,43 @@
-import Navbar from "../../../components/templates/Navbar";
-import Button from "../../../components/Button";
 import { FaPlus } from "react-icons/fa";
-import Table from "../../../components/Table";
+import Table from "../../components/Table";
+import Navbar from "../../components/templates/Navbar";
 import { MdDelete, MdOutlineEdit } from "react-icons/md";
+import Button from "../../components/Button";
 import { Link } from "react-router-dom";
 
-const MasterPage = () => {
+const DataTransaksi = () => {
   const columns = [
     { name: "No", selector: (row) => row.no, sortable: true },
-    { name: "Kode Barang", selector: (row) => row.kode_barang, sortable: true },
     {
-      name: "Jenis Barang",
-      selector: (row) => row.jenis_barang,
-      sortable: true,
-    },
-    { name: "Nama Barang", selector: (row) => row.nama_barang, sortable: true },
-    {
-      name: "Satuan Barang",
-      selector: (row) => row.satuan_barang,
+      name: "No Surat Jalan",
+      selector: (row) => row.no_surat_jalan,
       sortable: true,
     },
     {
-      name: "Ukuran Barang",
-      selector: (row) => row.ukuran_barang,
+      name: "Nama Pengatur",
+      selector: (row) => row.nama_pengatur,
       sortable: true,
     },
-    { name: "Stok Barang", selector: (row) => row.stok_barang, sortable: true },
+    {
+      name: "Nama Penyetuju",
+      selector: (row) => row.nama_penyetuju,
+      sortable: true,
+    },
+    {
+      name: "Nama Pengirim",
+      selector: (row) => row.nama_pengirim,
+      sortable: true,
+    },
+    {
+      name: "Nama Penerima",
+      selector: (row) => row.nama_penerima,
+      sortable: true,
+    },
+    {
+      name: "Qty",
+      selector: (row) => row.qty,
+      sortable: true,
+    },
     {
       name: "Aksi",
       cell: () => (
@@ -44,25 +56,25 @@ const MasterPage = () => {
   const record = [
     {
       no: 1,
-      kode_barang: "KB001",
-      jenis_barang: "Electronics",
-      nama_barang: "Laptop",
-      satuan_barang: "Unit",
-      ukuran_barang: "15 inch",
-      stok_barang: 25,
+      no_surat_jalan: "NSJ001",
+      nama_pengatur: "Andi",
+      nama_penyetuju: "Dani",
+      nama_pengirim: "Dinda",
+      nama_penerima: "Linda",
+      qty: 100,
     },
   ];
 
   return (
-    <Navbar title="Item">
+    <Navbar title="Transaksi">
       <div className="shadow rounded-3 bg-white p-4 pb-2">
         <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
-          <h1 className="h4">Daftar Item</h1>
+          <h1 className="h4">Daftar Transaksi</h1>
           <div className="btn-toolbar mb-2 mb-md-0">
-            <Link to={"/barang/tambah_barang"}>
+            <Link to={"/transaksi/tambah_transaksi"}>
               <Button color={"primary"}>
                 <FaPlus className="fs-6 mb-1" style={{ marginRight: "10px" }} />
-                Tambah Item
+                Tambah Transaksi
               </Button>
             </Link>
           </div>
@@ -74,4 +86,4 @@ const MasterPage = () => {
   );
 };
 
-export default MasterPage;
+export default DataTransaksi;

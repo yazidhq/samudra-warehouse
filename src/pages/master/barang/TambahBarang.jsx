@@ -4,7 +4,7 @@ import Navbar from "../../../components/templates/Navbar";
 import { FaArrowLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const MasterPage = () => {
+const TambahBarang = () => {
   return (
     <Navbar title="Item">
       <div className="shadow rounded-3 bg-white p-4 pb-2">
@@ -80,4 +80,4 @@ const MasterPage = () => {
   );
 };
 
-export default MasterPage;
+export default TambahBarang;
