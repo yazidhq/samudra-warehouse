@@ -142,10 +142,12 @@ const Navbar = ({ children, title }) => {
                   <li className="nav-item">
                     <div className="mx-3 my-3">
                       <div className="d-grid gap-2">
-                        <Button color={"danger"}>
-                          <CiLogout className="mb-1 mx-1" />
-                          Keluar
-                        </Button>
+                        <Link to={"/login"}>
+                          <Button color={"danger"}>
+                            <CiLogout className="mb-1 mx-1" />
+                            Keluar
+                          </Button>
+                        </Link>
                       </div>
                     </div>
                   </li>

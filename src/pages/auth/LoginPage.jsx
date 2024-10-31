@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import Button from "../../components/Button";
 import Image from "../../components/Image";
 
@@ -47,9 +48,11 @@ const LoginPage = () => {
               <input type="password" className="form-control" id="password" />
             </div>
 
-            <div className="d-grid gap-2 pb-3 mt-4">
-              <Button color={"primary"}>Masuk</Button>
-            </div>
+            <Link to={"/"}>
+              <div className="d-grid gap-2 pb-3 mt-4">
+                <Button color={"primary"}>Masuk</Button>
+              </div>
+            </Link>
           </form>
         </div>
       </div>
