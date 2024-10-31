@@ -116,7 +116,7 @@ const ItemTransaksi = () => {
         <Table columns={columns} record={record} />
         <div className="d-flex justify-content-between mb-3 mt-5">
           <Link
-            to={"/transaksi/tambah_transaksi"}
+            to={"./transaksi/tambah_transaksi"}
             className="text-decoration-none text-red"
           >
             <span style={{ color: "red" }}>
