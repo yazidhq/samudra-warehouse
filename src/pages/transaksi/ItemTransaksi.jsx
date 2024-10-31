@@ -115,7 +115,10 @@ const ItemTransaksi = () => {
         <hr />
         <Table columns={columns} record={record} />
         <div className="d-flex justify-content-between mb-3 mt-5">
-          <Link to={"/transaksi"} className="text-decoration-none text-red">
+          <Link
+            to={"/transaksi/tambah_transaksi"}
+            className="text-decoration-none text-red"
+          >
             <span style={{ color: "red" }}>
               <FaArrowLeft
                 className="fs-6 mb-1"
