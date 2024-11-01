@@ -26,13 +26,13 @@ const Navbar = ({ children, title }) => {
         >
           {title}
         </a>
-        <a
+        <div
           className="col-md-3 col-lg-2 px-4 fs-6 text-white text-end text-decoration-none"
           href="#"
         >
           <CgProfile className="fs-3 mx-2 mb-1" />
           Admin Gudang
-        </a>
+        </div>
       </header>
 
       <div className="container-fluid">
