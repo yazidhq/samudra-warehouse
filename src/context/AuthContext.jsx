@@ -29,10 +29,11 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("token", response.data.data.token);
     } catch (error) {
       console.log("Error logging in:", error);
-      Swal.fire(
-        "Failed!",
-        error.response?.data?.message || "Login failed"
-      ).then(() => {
+      Swal.fire({
+        icon: "error",
+        title: "Failed!",
+        text: error.response?.data?.message || "Login failed",
+      }).then(() => {
         setIsLoggedIn(false);
       });
     }
