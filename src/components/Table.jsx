@@ -52,7 +52,7 @@ const Table = ({ columns, record }) => {
         columns={columns}
         data={filteredData}
         pagination
-        paginationPerPage={7}
+        paginationPerPage={5}
       />
     </div>
   );
