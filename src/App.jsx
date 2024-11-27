@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import ValidasiPage from "./pages/validasi/ValidasiPage";
@@ -7,31 +12,82 @@ import TambahBarang from "./pages/master/barang/TambahBarang";
 import DataTransaksi from "./pages/transaksi/DataTransaksi";
 import TambahTransaksi from "./pages/transaksi/TambahTransaksi";
 import ItemTransaksi from "./pages/transaksi/ItemTransaksi";
+import { AuthProvider } from "./context/AuthContext";
+
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  return token ? children : <Navigate to="/login" />;
+};
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
 
-        <Route path="/" element={<DashboardPage />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route path="/barang" element={<DataBarang />} />
-        <Route path="/barang/tambah_barang" element={<TambahBarang />} />
+          <Route
+            path="/barang"
+            element={
+              <ProtectedRoute>
+                <DataBarang />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/barang/tambah_barang"
+            element={
+              <ProtectedRoute>
+                <TambahBarang />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route path="/transaksi" element={<DataTransaksi />} />
-        <Route
-          path="/transaksi/tambah_transaksi"
-          element={<TambahTransaksi />}
-        />
-        <Route
-          path="/transaksi/tambah_transaksi/item_transaksi"
-          element={<ItemTransaksi />}
-        />
+          <Route
+            path="/transaksi"
+            element={
+              <ProtectedRoute>
+                <DataTransaksi />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/transaksi/tambah_transaksi"
+            element={
+              <ProtectedRoute>
+                <TambahTransaksi />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/transaksi/tambah_transaksi/item_transaksi"
+            element={
+              <ProtectedRoute>
+                <ItemTransaksi />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route path="/validasi" element={<ValidasiPage />} />
-      </Routes>
-    </Router>
+          <Route
+            path="/validasi"
+            element={
+              <ProtectedRoute>
+                <ValidasiPage />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

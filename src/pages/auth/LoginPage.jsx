@@ -1,8 +1,20 @@
-import { Link } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import Button from "../../components/Button";
 import Image from "../../components/Image";
+import { useAuth } from "../../context/AuthContext";
 
 const LoginPage = () => {
+  const { currentUser, isLoggedIn, handleLogin } = useAuth();
+
+  if (isLoggedIn || currentUser) {
+    return <Navigate to="/" />;
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleLogin(e);
+  };
+
   return (
     <div
       className="position-relative d-flex align-items-center justify-content-center"
@@ -34,25 +46,35 @@ const LoginPage = () => {
           <div className="text-center fs-5 my-5">
             <span className="fw-medium">PT. SEMBILAN SAMUDRA PERKASA</span>
           </div>
-          <form className="px-5 mx-5">
+          <form onSubmit={handleSubmit} className="px-5 mx-5">
             <div className="mb-3">
-              <label htmlFor="email" className="form-label">
+              <label htmlFor="username" className="form-label">
                 Nama User
               </label>
-              <input type="email" className="form-control" id="email" />
+              <input
+                type="text"
+                className="form-control"
+                id="username"
+                name="username"
+                required
+              />
             </div>
             <div className="mb-3">
               <label htmlFor="password" className="form-label">
                 Kata Sandi
               </label>
-              <input type="password" className="form-control" id="password" />
+              <input
+                type="password"
+                className="form-control"
+                id="password"
+                name="password"
+                required
+              />
             </div>
 
-            <Link to={"/"}>
-              <div className="d-grid gap-2 pb-3 mt-4">
-                <Button color={"primary"}>Masuk</Button>
-              </div>
-            </Link>
+            <div className="d-grid gap-2 pb-3 mt-4">
+              <Button color={"primary"}>Masuk</Button>
+            </div>
           </form>
         </div>
       </div>

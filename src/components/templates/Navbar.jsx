@@ -7,9 +7,11 @@ import Button from "../../components/Button";
 import { CiLogout } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const Navbar = ({ children, title }) => {
   const location = useLocation();
+  const { handleLogout } = useAuth();
 
   return (
     <div>
@@ -146,7 +148,7 @@ const Navbar = ({ children, title }) => {
                         className="text-decoration-none text-white"
                       >
                         <div className="d-grid gap-2">
-                          <Button color={"danger"}>
+                          <Button color={"danger"} onClick={handleLogout}>
                             <CiLogout className="mb-1 mx-1" />
                             Keluar
                           </Button>
