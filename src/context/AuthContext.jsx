@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
       );
       setIsLoggedIn(true);
       setCurrentUser(data);
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", response.data.data.token);
     } catch (error) {
       console.log("Error logging in:", error);
       Swal.fire(
