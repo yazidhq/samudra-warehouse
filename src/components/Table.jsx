@@ -1,6 +1,16 @@
+import React, { useState } from "react";
 import DataTable from "react-data-table-component";
 
 const Table = ({ columns, record }) => {
+  const [searchText, setSearchText] = useState("");
+
+  const filteredData = record.filter((item) => {
+    return Object.values(item)
+      .join(" ")
+      .toLowerCase()
+      .includes(searchText.toLowerCase());
+  });
+
   const customStyles = {
     rows: {
       style: {
@@ -22,12 +32,29 @@ const Table = ({ columns, record }) => {
   };
 
   return (
-    <DataTable
-      customStyles={customStyles}
-      columns={columns}
-      data={record}
-      pagination
-    />
+    <div>
+      <input
+        type="text"
+        placeholder="Search..."
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+        style={{
+          marginBottom: "10px",
+          padding: "8px",
+          width: "100%",
+          borderRadius: "4px",
+          border: "1px solid #ccc",
+        }}
+      />
+
+      <DataTable
+        customStyles={customStyles}
+        columns={columns}
+        data={filteredData}
+        pagination
+        paginationPerPage={7}
+      />
+    </div>
   );
 };
 
