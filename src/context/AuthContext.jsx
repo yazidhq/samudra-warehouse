@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
       Swal.fire({
         icon: "error",
         title: "Failed!",
-        text: error.response?.data?.message || "Login failed",
+        text: error.response?.data?.message || "Username or password is wrong",
       }).then(() => {
         setIsLoggedIn(false);
       });
