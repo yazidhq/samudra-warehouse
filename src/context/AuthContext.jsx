@@ -20,23 +20,21 @@ export const AuthProvider = ({ children }) => {
     };
 
     try {
-      await axios
-        .post(`${import.meta.env.VITE_BASE_URL}/auth/login`, data)
-        .then((response) => {
-          setIsLoggedIn(true);
-          setCurrentUser({
-            username: e.target.username.value,
-            password: e.target.password.value,
-          });
-          localStorage.setItem("token", response.data.token);
-        })
-        .catch((response) => {
-          Swal.fire("Failed!", response.message).then(() => {
-            setIsLoggedIn(false);
-          });
-        });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/auth/login`,
+        data
+      );
+      setIsLoggedIn(true);
+      setCurrentUser(data);
+      localStorage.setItem("token", response.data.token);
     } catch (error) {
       console.log("Error logging in:", error);
+      Swal.fire(
+        "Failed!",
+        error.response?.data?.message || "Login failed"
+      ).then(() => {
+        setIsLoggedIn(false);
+      });
     }
   };
 
