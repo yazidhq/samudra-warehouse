@@ -4,9 +4,10 @@ import Image from "../../components/Image";
 import { useAuth } from "../../context/AuthContext";
 
 const LoginPage = () => {
-  const { currentUser, isLoggedIn, handleLogin } = useAuth();
+  const { handleLogin } = useAuth();
 
-  if (isLoggedIn || currentUser) {
+  const token = localStorage.getItem("token");
+  if (token) {
     return <Navigate to="/" />;
   }
 
