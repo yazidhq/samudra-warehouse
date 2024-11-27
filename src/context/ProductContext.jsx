@@ -22,54 +22,58 @@ export const ProductProvider = ({ children }) => {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     };
 
+    const token = localStorage.getItem("token");
+
     try {
-      const fetchProducts = async () => {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/product/list`,
-          {
-            headers: header,
-            params,
-          }
-        );
-        setProduct(response.data.data);
-      };
-      fetchProducts();
+      if (token) {
+        const fetchProducts = async () => {
+          const response = await axios.get(
+            `${import.meta.env.VITE_BASE_URL}/product/list`,
+            {
+              headers: header,
+              params,
+            }
+          );
+          setProduct(response.data.data);
+        };
+        fetchProducts();
 
-      const fetchUnit = async () => {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/dropdown/unit/list`,
-          {
-            headers: header,
-            params,
-          }
-        );
-        setUnit(response.data.data);
-      };
-      fetchUnit();
+        const fetchUnit = async () => {
+          const response = await axios.get(
+            `${import.meta.env.VITE_BASE_URL}/dropdown/unit/list`,
+            {
+              headers: header,
+              params,
+            }
+          );
+          setUnit(response.data.data);
+        };
+        fetchUnit();
 
-      const fetchUnitSize = async () => {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/dropdown/unit-size/list`,
-          {
-            headers: header,
-            params,
-          }
-        );
-        setUnitSize(response.data.data);
-      };
-      fetchUnitSize();
+        const fetchUnitSize = async () => {
+          const response = await axios.get(
+            `${import.meta.env.VITE_BASE_URL}/dropdown/unit-size/list`,
+            {
+              headers: header,
+              params,
+            }
+          );
+          setUnitSize(response.data.data);
+        };
+        fetchUnitSize();
 
-      const fetchType = async () => {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/dropdown/type/list`,
-          {
-            headers: header,
-            params,
-          }
-        );
-        setType(response.data.data);
-      };
-      fetchType();
+        const fetchType = async () => {
+          const response = await axios.get(
+            `${import.meta.env.VITE_BASE_URL}/dropdown/type/list`,
+            {
+              headers: header,
+              params,
+            }
+          );
+          setType(response.data.data);
+        };
+        fetchType();
+      }
     } catch (error) {
       console.log("Error get product:", error);
     }

@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }) => {
       setIsLoggedIn(true);
       setCurrentUser(data);
       localStorage.setItem("token", response.data.data.token);
+      window.location.href = "/";
     } catch (error) {
       console.log("Error logging in:", error);
       Swal.fire({

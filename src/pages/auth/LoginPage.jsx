@@ -2,18 +2,35 @@ import { Navigate } from "react-router-dom";
 import Button from "../../components/Button";
 import Image from "../../components/Image";
 import { useAuth } from "../../context/AuthContext";
+import { useState } from "react";
 
 const LoginPage = () => {
   const { handleLogin } = useAuth();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const token = localStorage.getItem("token");
   if (token) {
     return <Navigate to="/" />;
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    handleLogin(e);
+    setErrorMessage(""); // Reset error message on each submit attempt
+
+    const username = e.target.username.value;
+    const password = e.target.password.value;
+
+    // Basic form validation
+    if (!username || !password) {
+      setErrorMessage("Please enter both username and password.");
+      return;
+    }
+
+    try {
+      await handleLogin(e); // Assuming handleLogin will throw error on failure
+    } catch (error) {
+      setErrorMessage("Login failed. Please check your credentials.");
+    }
   };
 
   return (
@@ -48,6 +65,9 @@ const LoginPage = () => {
             <span className="fw-medium">PT. SEMBILAN SAMUDRA PERKASA</span>
           </div>
           <form onSubmit={handleSubmit} className="px-5 mx-5">
+            {errorMessage && (
+              <div className="alert alert-danger mb-3">{errorMessage}</div>
+            )}
             <div className="mb-3">
               <label htmlFor="username" className="form-label">
                 Nama User
@@ -57,7 +77,9 @@ const LoginPage = () => {
                 className="form-control"
                 id="username"
                 name="username"
+                autoComplete="current-password"
                 required
+                aria-label="Username"
               />
             </div>
             <div className="mb-3">
@@ -69,7 +91,9 @@ const LoginPage = () => {
                 className="form-control"
                 id="password"
                 name="password"
+                autoComplete="current-password"
                 required
+                aria-label="Password"
               />
             </div>
 
