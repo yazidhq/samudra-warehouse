@@ -15,19 +15,18 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Reset error message on each submit attempt
+    setErrorMessage("");
 
     const username = e.target.username.value;
     const password = e.target.password.value;
 
-    // Basic form validation
     if (!username || !password) {
       setErrorMessage("Please enter both username and password.");
       return;
     }
 
     try {
-      await handleLogin(e); // Assuming handleLogin will throw error on failure
+      await handleLogin(e);
     } catch (error) {
       setErrorMessage("Login failed. Please check your credentials.");
     }
