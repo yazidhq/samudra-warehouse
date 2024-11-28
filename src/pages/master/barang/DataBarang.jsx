@@ -35,7 +35,7 @@ const DataBarang = () => {
     } catch (error) {
       console.log("Error get product:", error);
     }
-  }, []);
+  }, [handleDelete]);
 
   const columns = [
     { name: "Kode Barang", selector: (row) => row.kode_barang, sortable: true },
