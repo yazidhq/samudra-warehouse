@@ -25,16 +25,10 @@ const Navbar = ({ children, title }) => {
         >
           <Image src={"/data/logo.png"} width={"150px"} style={"my-3"} />
         </Link>
-        <a
-          className="col-md-8 col-lg-8 px-4 fs-3 text-white text-start text-decoration-none fw-bold"
-          href="#"
-        >
+        <a className="col-md-8 col-lg-8 px-4 fs-3 text-white text-start text-decoration-none fw-bold">
           {title}
         </a>
-        <div
-          className="col-md-3 col-lg-2 px-4 fs-6 text-white text-end text-decoration-none"
-          href="#"
-        >
+        <div className="col-md-3 col-lg-2 px-4 fs-6 text-white text-end text-decoration-none">
           <CgProfile className="fs-3 mx-2 mb-1" />
           {nama.data.name}
         </div>
@@ -136,10 +130,7 @@ const Navbar = ({ children, title }) => {
                 >
                   <hr className="my-3" />
                   <li className="nav-item">
-                    <a
-                      className="nav-link d-flex align-items-center gap-2 text-primary"
-                      href="#"
-                    >
+                    <a className="nav-link d-flex align-items-center gap-2 text-primary">
                       <CgProfile className="fs-3" />
                       Nama Admin
                     </a>
