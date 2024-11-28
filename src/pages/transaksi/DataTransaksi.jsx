@@ -4,10 +4,40 @@ import Navbar from "../../components/templates/Navbar";
 import { MdDelete, MdOutlineEdit } from "react-icons/md";
 import Button from "../../components/Button";
 import { Link } from "react-router-dom";
+import { useTransaction } from "../../context/TransactionContext";
+import axios from "axios";
+import { useEffect } from "react";
+import { AiFillDatabase } from "react-icons/ai";
 
 const DataTransaksi = () => {
+  const { setTransaction, transaction, handleDelete } = useTransaction();
+
+  useEffect(() => {
+    const params = {
+      page: 1,
+      dataPerPage: 1000,
+    };
+
+    try {
+      const fetchTransactions = async () => {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/transaction/list`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            params,
+          }
+        );
+        setTransaction(response.data.data);
+      };
+      fetchTransactions();
+    } catch (error) {
+      console.log("Error get Transaction:", error);
+    }
+  }, [handleDelete]);
+
   const columns = [
-    { name: "No", selector: (row) => row.no, sortable: true },
     {
       name: "No Surat Jalan",
       selector: (row) => row.no_surat_jalan,
@@ -34,18 +64,20 @@ const DataTransaksi = () => {
       sortable: true,
     },
     {
-      name: "Qty",
-      selector: (row) => row.qty,
-      sortable: true,
-    },
-    {
       name: "Aksi",
-      cell: () => (
+      cell: (row) => (
         <div className="d-flex gap-1">
-          <Button color={"warning"}>
-            <MdOutlineEdit className="d-flex align-items-center" />
-          </Button>
-          <Button color={"danger"}>
+          <Link to={`/transaksi/tambah_transaksi/item_transaksi`}>
+            <Button color={"info text-white"}>
+              <AiFillDatabase className="d-flex align-items-center" />
+            </Button>
+          </Link>
+          <Link to={`/transaksi/edit_transaksi/${row.id}`}>
+            <Button color={"warning"}>
+              <MdOutlineEdit className="d-flex align-items-center" />
+            </Button>
+          </Link>
+          <Button color={"danger"} onClick={() => handleDelete(row.id)}>
             <MdDelete className="d-flex align-items-center" />
           </Button>
         </div>
@@ -53,17 +85,27 @@ const DataTransaksi = () => {
     },
   ];
 
-  const record = [
-    {
-      no: 1,
-      no_surat_jalan: "NSJ001",
-      nama_pengatur: "Andi",
-      nama_penyetuju: "Dani",
-      nama_pengirim: "Dinda",
-      nama_penerima: "Linda",
-      qty: 100,
-    },
-  ];
+  const transactions = transaction?.data || [];
+  const record = [];
+
+  transactions.map((v) => {
+    if (v && v.id) {
+      record.push({
+        id: v.id,
+        no_surat_jalan: v.deliveryOrderNumber || "No deliveryOrderNumber",
+        nama_pengatur: v.organizerName || "No typorganizerNamee",
+        nama_penyetuju: v.approvalName || "No approvalName",
+        nama_pengirim: v.senderName || "No senderName",
+        nama_penerima: v.recipientName || "No recipientName",
+      });
+    }
+  });
+
+  record.sort((a, b) => {
+    if (a.id > b.id) return -1;
+    if (a.id < b.id) return 1;
+    return 0;
+  });
 
   return (
     <Navbar title="Transaksi">

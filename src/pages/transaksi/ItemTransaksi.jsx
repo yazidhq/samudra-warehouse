@@ -1,6 +1,5 @@
-import { FaArrowLeft, FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import { MdDelete, MdOutlineEdit } from "react-icons/md";
-import { Link } from "react-router-dom";
 import Navbar from "../../components/templates/Navbar";
 import Button from "../../components/Button";
 import Table from "../../components/Table";
@@ -8,7 +7,6 @@ import { IoIosSave } from "react-icons/io";
 
 const ItemTransaksi = () => {
   const columns = [
-    { name: "No", selector: (row) => row.no, sortable: true },
     { name: "Kode Barang", selector: (row) => row.kode_barang, sortable: true },
     {
       name: "Jenis Barang",
@@ -44,7 +42,6 @@ const ItemTransaksi = () => {
 
   const record = [
     {
-      no: 1,
       kode_barang: "KB001",
       jenis_barang: "Electronics",
       nama_barang: "Laptop",
@@ -114,20 +111,6 @@ const ItemTransaksi = () => {
         </div>
         <hr />
         <Table columns={columns} record={record} />
-        <div className="d-flex justify-content-between mb-3 mt-5">
-          <Link
-            to={"/transaksi/tambah_transaksi"}
-            className="text-decoration-none text-red"
-          >
-            <span style={{ color: "red" }}>
-              <FaArrowLeft
-                className="fs-6 mb-1"
-                style={{ marginRight: "10px", color: "red" }}
-              />
-              <span className="fw-medium">Kembali</span>
-            </span>
-          </Link>
-        </div>
       </div>
     </Navbar>
   );
