@@ -6,9 +6,36 @@ import { MdDelete, MdOutlineEdit } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useProduct } from "../../../context/ProductContext";
 import { AiOutlineMenu } from "react-icons/ai";
+import axios from "axios";
+import { useEffect } from "react";
 
 const DataBarang = () => {
-  const { product, handleDelete } = useProduct();
+  const { setProduct, product, handleDelete } = useProduct();
+
+  useEffect(() => {
+    const params = {
+      page: 1,
+      dataPerPage: 1000,
+    };
+
+    try {
+      const fetchProducts = async () => {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/product/list`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            params,
+          }
+        );
+        setProduct(response.data.data);
+      };
+      fetchProducts();
+    } catch (error) {
+      console.log("Error get product:", error);
+    }
+  }, []);
 
   const columns = [
     { name: "Kode Barang", selector: (row) => row.kode_barang, sortable: true },

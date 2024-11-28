@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const ProductContext = createContext();
@@ -11,6 +12,7 @@ export const ProductProvider = ({ children }) => {
   const [unit, setUnit] = useState([]);
   const [unitSize, setUnitSize] = useState([]);
   const [type, setType] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const params = {
@@ -114,7 +116,7 @@ export const ProductProvider = ({ children }) => {
         title: "Success!",
         text: "Product created successfully!",
       }).then(() => {
-        window.location.href = "/barang";
+        navigate("/barang");
       });
     } catch (error) {
       Swal.fire({
@@ -122,7 +124,7 @@ export const ProductProvider = ({ children }) => {
         title: "Error",
         text: "Failed to create product.",
       }).then(() => {
-        window.location.href = "/barang";
+        navigate("/barang");
       });
     }
   };
@@ -160,21 +162,9 @@ export const ProductProvider = ({ children }) => {
         return prevProducts;
       });
 
-      Swal.fire({
-        icon: "success",
-        title: "Success!",
-        text: "Product updated successfully!",
-      }).then(() => {
-        window.location.href = "/barang";
-      });
+      navigate("/barang");
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to update product.",
-      }).then(() => {
-        window.location.href = "/barang";
-      });
+      navigate("/barang");
     }
   };
 
@@ -210,16 +200,12 @@ export const ProductProvider = ({ children }) => {
           icon: "success",
           title: "Deleted!",
           text: "The product has been deleted.",
-        }).then(() => {
-          window.location.href = "/barang";
         });
       } catch (error) {
         Swal.fire({
           icon: "error",
           title: "Error",
           text: "Failed to delete product.",
-        }).then(() => {
-          window.location.href = "/barang";
         });
       }
     }
@@ -228,6 +214,7 @@ export const ProductProvider = ({ children }) => {
   return (
     <ProductContext.Provider
       value={{
+        setProduct,
         product,
         unit,
         unitSize,
