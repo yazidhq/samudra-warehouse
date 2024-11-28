@@ -206,7 +206,9 @@ const ValidasiPage = () => {
                   <div
                     className={`card-header ${headerBgColor} text-white fw-medium d-flex justify-content-between align-items-center`}
                   >
-                    <div>{v.productCode}</div>
+                    <div>
+                      {v.productCode} ({productDetails?.quantity})
+                    </div>
                     <div>
                       <MdDelete
                         className="fs-2 text-danger bg-white rounded-1 p-1"
