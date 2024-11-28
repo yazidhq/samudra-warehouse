@@ -8,10 +8,13 @@ import { CiLogout } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { jwtDecode } from "jwt-decode";
 
 const Navbar = ({ children, title }) => {
   const location = useLocation();
   const { handleLogout } = useAuth();
+
+  const nama = jwtDecode(localStorage.getItem("token"));
 
   return (
     <div>
@@ -33,7 +36,7 @@ const Navbar = ({ children, title }) => {
           href="#"
         >
           <CgProfile className="fs-3 mx-2 mb-1" />
-          Admin Gudang
+          {nama.data.name}
         </div>
       </header>
 

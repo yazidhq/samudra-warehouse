@@ -7,7 +7,6 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogin = async (e) => {
@@ -25,7 +24,6 @@ export const AuthProvider = ({ children }) => {
         data
       );
       setIsLoggedIn(true);
-      setCurrentUser(data);
       localStorage.setItem("token", response.data.data.token);
       window.location.href = "/";
     } catch (error) {
@@ -50,9 +48,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ handleLogin, handleLogout, currentUser, isLoggedIn }}
-    >
+    <AuthContext.Provider value={{ handleLogin, handleLogout, isLoggedIn }}>
       {children}
     </AuthContext.Provider>
   );
