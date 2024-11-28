@@ -4,139 +4,253 @@ import Button from "../../components/Button";
 import { IoIosSave } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { FiMinus, FiPlus } from "react-icons/fi";
+import { useState, useEffect } from "react";
+import { useProduct } from "../../context/ProductContext";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const ValidasiPage = () => {
+  const { product, type } = useProduct();
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [selectedType, setSelectedType] = useState("");
+  const [validateList, setValidateList] = useState([]);
+
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("validateData")) || [];
+    setValidateList(storedData);
+  }, []);
+
+  const handleTypeChange = (e) => {
+    const typeId = e.target.value;
+    setSelectedType(typeId);
+
+    const filtered = product?.data?.filter(
+      (item) => item.typeId === parseInt(typeId)
+    );
+    setFilteredProducts(filtered || []);
+  };
+
+  const handleSave = (e) => {
+    e.preventDefault();
+
+    const data = {
+      productCode: e.target.productCode.value,
+      quantity: parseInt(e.target.quantity.value),
+    };
+
+    setValidateList((prevProducts) => {
+      const updatedList = [...prevProducts, data];
+      localStorage.setItem("validateData", JSON.stringify(updatedList));
+      return updatedList;
+    });
+  };
+
+  const handleDelete = (index) => {
+    setValidateList((prevList) => {
+      const updatedList = prevList.filter((_, i) => i !== index);
+      localStorage.setItem("validateData", JSON.stringify(updatedList));
+      return updatedList;
+    });
+  };
+
+  const handleIncreaseQuantity = (index) => {
+    setValidateList((prevList) => {
+      const updatedList = [...prevList];
+      updatedList[index].quantity += 1;
+      localStorage.setItem("validateData", JSON.stringify(updatedList));
+      return updatedList;
+    });
+  };
+
+  const handleDecreaseQuantity = (index) => {
+    setValidateList((prevList) => {
+      const updatedList = [...prevList];
+      if (updatedList[index].quantity > 1) {
+        updatedList[index].quantity -= 1;
+        localStorage.setItem("validateData", JSON.stringify(updatedList));
+      }
+      return updatedList;
+    });
+  };
+
+  const handleValidate = async () => {
+    const data = validateList;
+
+    try {
+      await axios.post(`${import.meta.env.VITE_BASE_URL}/stock/check`, data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Stock validated successfully!",
+      }).then(() => {
+        navigate("/barang");
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to validate stock.",
+      });
+    }
+  };
+
   return (
     <Navbar title="Validasi Stok">
       <div className="shadow rounded-3 bg-white p-4 pb-2">
-        <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
-          <h1 className="h4">Item</h1>
-          <div className="btn-toolbar mb-2 mb-md-0">
-            <button
-              type="button"
-              className="btn btn-primary"
-              data-bs-toggle="modal"
-              data-bs-target="#exampleModal"
-            >
-              <FaPlus className="fs-6 mb-1" style={{ marginRight: "10px" }} />
-              Tambah Item
-            </button>
-            <div
-              className="modal fade"
-              id="exampleModal"
-              tabIndex="-1"
-              aria-labelledby="exampleModalLabel"
-              aria-hidden="true"
-            >
-              <div className="modal-dialog modal-lg">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="exampleModalLabel">
-                      Tambah Item
-                    </h1>
-                  </div>
-                  <div className="modal-body">
-                    <div className="mb-3">
-                      <label className="form-label mt-2">Kategori Barang</label>
-                      <select type="text" className="form-control">
-                        <option selected>- Pilih Kategori -</option>
-                        <option>Kategori 1</option>
-                        <option>Kategori 2</option>
-                        <option>Kategori 3</option>
-                      </select>
+        <form onSubmit={handleSave}>
+          <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
+            <h1 className="h4">Item</h1>
+            <div className="btn-toolbar mb-2 mb-md-0">
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+              >
+                <FaPlus className="fs-6 mb-1" style={{ marginRight: "10px" }} />
+                Tambah Item
+              </button>
+              <div
+                className="modal fade"
+                id="exampleModal"
+                tabIndex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+              >
+                <div className="modal-dialog modal-lg">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h1 className="modal-title fs-5" id="exampleModalLabel">
+                        Tambah Item
+                      </h1>
                     </div>
-                    <div className="mb-3">
-                      <label className="form-label mt-2">
-                        Kuantitas Barang
-                      </label>
-                      <input type="number" className="form-control" />
+                    <div className="modal-body">
+                      <div className="mb-3">
+                        <label className="form-label mt-2">Jenis Barang</label>
+                        <select
+                          className="form-control"
+                          name="typeId"
+                          onChange={handleTypeChange}
+                        >
+                          <option value="">Pilih Jenis Barang</option>
+                          {type?.data?.map((item) => (
+                            <option key={item.id} value={item.id}>
+                              {item.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      {selectedType && (
+                        <div className="mb-3">
+                          <label className="form-label mt-2">Barang</label>
+                          <select className="form-control" name="productCode">
+                            <option value="">Pilih Barang</option>
+                            {filteredProducts.map((item) => (
+                              <option key={item.id} value={item.code}>
+                                {item.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+                      {selectedType && (
+                        <div className="mb-3">
+                          <label className="form-label mt-2">
+                            Kuantitas Barang
+                          </label>
+                          <input
+                            type="number"
+                            className="form-control"
+                            name="quantity"
+                          />
+                        </div>
+                      )}
                     </div>
-                  </div>
-                  <div className="modal-footer">
-                    <Button color={"primary"}>
-                      <IoIosSave
-                        className="fs-6 mb-1"
-                        style={{ marginRight: "10px" }}
-                      />
-                      Simpan
-                    </Button>
+                    {selectedType && (
+                      <div className="modal-footer">
+                        <Button color={"primary"}>
+                          <IoIosSave
+                            className="fs-6 mb-1"
+                            style={{ marginRight: "10px" }}
+                          />
+                          Simpan
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </form>
         <hr />
         <div className="mb-4">
           <div className="row row-cols-2 row-cols-lg-2 g-2 g-lg-3">
-            <div className="card border-0">
-              <div className="card-header bg-primary text-white fw-medium d-flex justify-content-between align-items-center">
-                <div>Kode Barang</div>
-                <div>
-                  <MdDelete className="fs-2 text-danger bg-white rounded-1 p-1" />
+            {validateList.map((v, index) => {
+              const productDetails = product?.data?.find(
+                (item) => item.code === v.productCode
+              );
+
+              const headerBgColor =
+                v.quantity < productDetails?.quantity
+                  ? "bg-primary"
+                  : "bg-danger";
+
+              return (
+                <div className="card border-0" key={index}>
+                  <div
+                    className={`card-header ${headerBgColor} text-white fw-medium d-flex justify-content-between align-items-center`}
+                  >
+                    <div>{v.productCode}</div>
+                    <div>
+                      <MdDelete
+                        className="fs-2 text-danger bg-white rounded-1 p-1"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => handleDelete(index)}
+                      />
+                    </div>
+                  </div>
+                  <div className="card-body border rounded-bottom">
+                    <h5 className="card-title">{productDetails?.name}</h5>
+                    <p className="card-text">
+                      {productDetails?.unit_size.name}{" "}
+                      {productDetails?.unit.name}
+                    </p>
+                    <div className="d-flex justify-content-end align-items-center gap-3">
+                      <FiMinus
+                        className="fs-3 border border-1 border-dark rounded-circle"
+                        onClick={() => handleDecreaseQuantity(index)}
+                      />
+                      <input
+                        type="number"
+                        className="text-center border-0 rounded bg-secondary py-2"
+                        value={v.quantity}
+                        disabled
+                      />
+                      <FiPlus
+                        className="fs-3 border border-1 border-dark rounded-circle"
+                        onClick={() => handleIncreaseQuantity(index)}
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="card-body border rounded-bottom">
-                <h5 className="card-titl e">Nama Barang - 1 Liter</h5>
-                <p className="card-text">1 Kaleng/ Kemasan</p>
-                <div className="d-flex justify-content-end align-items-center gap-3">
-                  <FiMinus className="fs-3 border border-1 border-dark rounded-circle" />
-                  <input
-                    type="number"
-                    className="text-center border-0 rounded bg-secondary py-2"
-                    disabled
-                  />
-                  <FiPlus className="fs-3 border border-1 border-dark rounded-circle" />
-                </div>
-              </div>
-            </div>
-            <div className="card border-0">
-              <div className="card-header bg-primary text-white fw-medium d-flex justify-content-between align-items-center">
-                <div>Kode Barang</div>
-                <div>
-                  <MdDelete className="fs-2 text-danger bg-white rounded-1 p-1" />
-                </div>
-              </div>
-              <div className="card-body border rounded-bottom">
-                <h5 className="card-titl e">Nama Barang - 1 Liter</h5>
-                <p className="card-text">1 Kaleng/ Kemasan</p>
-                <div className="d-flex justify-content-end align-items-center gap-3">
-                  <FiMinus className="fs-3 border border-1 border-dark rounded-circle" />
-                  <input
-                    type="number"
-                    className="text-center border-0 rounded bg-secondary py-2"
-                    disabled
-                  />
-                  <FiPlus className="fs-3 border border-1 border-dark rounded-circle" />
-                </div>
-              </div>
-            </div>
-            <div className="card border-0">
-              <div className="card-header bg-primary text-white fw-medium d-flex justify-content-between align-items-center">
-                <div>Kode Barang</div>
-                <div>
-                  <MdDelete className="fs-2 text-danger bg-white rounded-1 p-1" />
-                </div>
-              </div>
-              <div className="card-body border rounded-bottom">
-                <h5 className="card-titl e">Nama Barang - 1 Liter</h5>
-                <p className="card-text">1 Kaleng/ Kemasan</p>
-                <div className="d-flex justify-content-end align-items-center gap-3">
-                  <FiMinus className="fs-3 border border-1 border-dark rounded-circle" />
-                  <input
-                    type="number"
-                    className="text-center border-0 rounded bg-secondary py-2"
-                    disabled
-                  />
-                  <FiPlus className="fs-3 border border-1 border-dark rounded-circle" />
-                </div>
-              </div>
-            </div>
+              );
+            })}
           </div>
-        </div>
-        <hr />
-        <div className="mb-3 text-end">
-          <Button color={"primary px-5"}>Verifikasi</Button>
+          <div className="d-flex justify-content-between mb-3 mt-5">
+            <Button color={"primary"} onClick={handleValidate}>
+              <IoIosSave
+                className="fs-6 mb-1"
+                style={{ marginRight: "10px" }}
+              />
+              Validasi Stok
+            </Button>
+          </div>
         </div>
       </div>
     </Navbar>
