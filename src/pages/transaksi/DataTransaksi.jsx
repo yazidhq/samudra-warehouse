@@ -15,7 +15,7 @@ const DataTransaksi = () => {
   useEffect(() => {
     const params = {
       page: 1,
-      dataPerPage: 1000,
+      dataPerPage: 1,
     };
 
     try {
@@ -67,7 +67,7 @@ const DataTransaksi = () => {
       name: "Aksi",
       cell: (row) => (
         <div className="d-flex gap-1">
-          <Link to={`/transaksi/tambah_transaksi/item_transaksi`}>
+          <Link to={`/transaksi/${row.id}/item_transaksi`}>
             <Button color={"info text-white"}>
               <AiFillDatabase className="d-flex align-items-center" />
             </Button>
