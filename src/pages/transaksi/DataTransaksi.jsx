@@ -15,7 +15,7 @@ const DataTransaksi = () => {
   useEffect(() => {
     const params = {
       page: 1,
-      dataPerPage: 1,
+      dataPerPage: 1000,
     };
 
     try {
@@ -35,7 +35,7 @@ const DataTransaksi = () => {
     } catch (error) {
       console.log("Error get Transaction:", error);
     }
-  }, [handleDelete]);
+  }, []);
 
   const columns = [
     {

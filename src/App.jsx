@@ -83,18 +83,18 @@ function App() {
                 }
               />
               <Route
-                path="/transaksi/tambah_transaksi/item_transaksi"
-                element={
-                  <ProtectedRoute>
-                    <ItemTransaksi />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
                 path="/transaksi/edit_transaksi/:id"
                 element={
                   <ProtectedRoute>
                     <EditTransaksi />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/transaksi/:id/item_transaksi"
+                element={
+                  <ProtectedRoute>
+                    <ItemTransaksi />
                   </ProtectedRoute>
                 }
               />

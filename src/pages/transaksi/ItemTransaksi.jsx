@@ -4,35 +4,157 @@ import Navbar from "../../components/templates/Navbar";
 import Button from "../../components/Button";
 import Table from "../../components/Table";
 import { IoIosSave } from "react-icons/io";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { useProduct } from "../../context/ProductContext";
+import Swal from "sweetalert2";
 
 const ItemTransaksi = () => {
+  const { product, type } = useProduct();
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [selectedType, setSelectedType] = useState("");
+  const [transactionItem, setTransactionItem] = useState([]);
+  const { id } = useParams();
+
+  const handleCreateItem = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/transaction/${id}/add-item`,
+        {
+          productCode: e.target.productCode.value,
+          quantity: parseInt(e.target.quantity.value),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      setTransactionItem((prevItems) => {
+        if (Array.isArray(prevItems)) {
+          return [...prevItems, response.data.data];
+        }
+        return [response.data.data];
+      });
+
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Transactions Item created successfully!",
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to create Transactions Item!",
+      });
+    }
+  };
+
+  const handleDeleteItem = async (productCode) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, keep it",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.delete(
+          `${
+            import.meta.env.VITE_BASE_URL
+          }/transaction/${id}/delete-item/${productCode}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        setTransactionItem((prevItems) => {
+          if (Array.isArray(prevItems)) {
+            return [...prevItems, response.data.data];
+          }
+          return [response.data.data];
+        });
+
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "The Transaction item has been deleted.",
+        });
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to delete Transaction item.",
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    const params = {
+      page: 1,
+      dataPerPage: 1000,
+    };
+
+    try {
+      const fetchTransactionsItem = async () => {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/transaction/${id}/items`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            params,
+          }
+        );
+        setTransactionItem(response.data.data);
+      };
+      fetchTransactionsItem();
+    } catch (error) {
+      console.log("Error get Transactions Item:", error);
+    }
+  }, []);
+
+  const handleTypeChange = (e) => {
+    const typeId = e.target.value;
+    setSelectedType(typeId);
+
+    const filtered = product?.data?.filter(
+      (item) => item.typeId === parseInt(typeId)
+    );
+    setFilteredProducts(filtered || []);
+  };
+
   const columns = [
     { name: "Kode Barang", selector: (row) => row.kode_barang, sortable: true },
+    { name: "Nama Barang", selector: (row) => row.nama_barang, sortable: true },
     {
       name: "Jenis Barang",
       selector: (row) => row.jenis_barang,
       sortable: true,
     },
-    { name: "Nama Barang", selector: (row) => row.nama_barang, sortable: true },
-    {
-      name: "Satuan Barang",
-      selector: (row) => row.satuan_barang,
-      sortable: true,
-    },
-    {
-      name: "Ukuran Barang",
-      selector: (row) => row.ukuran_barang,
-      sortable: true,
-    },
-    { name: "Stok Barang", selector: (row) => row.stok_barang, sortable: true },
+    { name: "Ukuran Unit", selector: (row) => row.unit_size, sortable: true },
+    { name: "Kuantitas", selector: (row) => row.kuantitas, sortable: true },
     {
       name: "Aksi",
-      cell: () => (
+      cell: (row) => (
         <div className="d-flex gap-1">
-          <Button color={"warning"}>
+          {/* <Button color={"warning"}>
             <MdOutlineEdit className="d-flex align-items-center" />
-          </Button>
-          <Button color={"danger"}>
+          </Button> */}
+          <Button
+            color={"danger"}
+            onClick={() => handleDeleteItem(row.kode_barang)}
+          >
             <MdDelete className="d-flex align-items-center" />
           </Button>
         </div>
@@ -40,16 +162,28 @@ const ItemTransaksi = () => {
     },
   ];
 
-  const record = [
-    {
-      kode_barang: "KB001",
-      jenis_barang: "Electronics",
-      nama_barang: "Laptop",
-      satuan_barang: "Unit",
-      ukuran_barang: "15 inch",
-      stok_barang: 25,
-    },
-  ];
+  const transactionsItem = transactionItem?.data || [];
+  const record = [];
+
+  transactionsItem.map((v) => {
+    if (v && v.id) {
+      record.push({
+        id: v.id,
+        kode_barang: v.productCode || "No productCode",
+        nama_barang: v.product.name || "No Name",
+        jenis_barang: v.product.type.name || "No Type",
+        unit_size:
+          v.product.unit_size.name + " " + v.product.unit.name || "No Size",
+        kuantitas: v.quantity || "No quantity",
+      });
+    }
+  });
+
+  record.sort((a, b) => {
+    if (a.id > b.id) return -1;
+    if (a.id < b.id) return 1;
+    return 0;
+  });
 
   return (
     <Navbar title="Item">
@@ -69,7 +203,7 @@ const ItemTransaksi = () => {
             <div
               className="modal fade"
               id="exampleModal"
-              tabindex="-1"
+              tabIndex="-1"
               aria-labelledby="exampleModalLabel"
               aria-hidden="true"
             >
@@ -80,30 +214,61 @@ const ItemTransaksi = () => {
                       Tambah Item
                     </h1>
                   </div>
-                  <div className="modal-body">
-                    <div class="mb-3">
-                      <label class="form-label mt-2">Pilih Barang</label>
-                      <select type="text" class="form-control">
-                        <option selected>- Pilih Barang -</option>
-                        <option value="1">Barang 1</option>
-                        <option value="2">Barang 2</option>
-                        <option value="3">Barang 3</option>
-                      </select>
+                  <form onSubmit={handleCreateItem}>
+                    <div className="modal-body">
+                      <div className="mb-3">
+                        <label className="form-label mt-2">Jenis Barang</label>
+                        <select
+                          className="form-control"
+                          name="typeId"
+                          onChange={handleTypeChange}
+                        >
+                          <option value="">Pilih Jenis Barang</option>
+                          {type?.data?.map((item) => (
+                            <option key={item.id} value={item.id}>
+                              {item.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      {selectedType && (
+                        <div className="mb-3">
+                          <label className="form-label mt-2">Barang</label>
+                          <select className="form-control" name="productCode">
+                            <option value="">Pilih Barang</option>
+                            {filteredProducts.map((item) => (
+                              <option key={item.id} value={item.code}>
+                                {`${item.name} - ${item.unit_size.name} ${item.unit.name}`}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+                      {selectedType && (
+                        <div className="mb-3">
+                          <label className="form-label mt-2">
+                            Kuantitas Barang
+                          </label>
+                          <input
+                            type="number"
+                            className="form-control"
+                            name="quantity"
+                          />
+                        </div>
+                      )}
                     </div>
-                    <div class="mb-3">
-                      <label class="form-label mt-2">Kuantitas Barang</label>
-                      <input type="number" class="form-control" />
-                    </div>
-                  </div>
-                  <div className="modal-footer">
-                    <Button color={"primary"}>
-                      <IoIosSave
-                        className="fs-6 mb-1"
-                        style={{ marginRight: "10px" }}
-                      />
-                      Simpan
-                    </Button>
-                  </div>
+                    {selectedType && (
+                      <div className="modal-footer">
+                        <Button color={"primary"}>
+                          <IoIosSave
+                            className="fs-6 mb-1"
+                            style={{ marginRight: "10px" }}
+                          />
+                          Simpan
+                        </Button>
+                      </div>
+                    )}
+                  </form>
                 </div>
               </div>
             </div>

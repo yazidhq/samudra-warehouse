@@ -76,7 +76,7 @@ export const TransactionProvider = ({ children }) => {
         title: "Success!",
         text: "Transaction created successfully!",
       }).then(() => {
-        navigate("/transaksi/tambah_transaksi/item_transaksi");
+        navigate(`/transaksi/${response.data.data.id}/item_transaksi`);
       });
     } catch (error) {
       Swal.fire({
