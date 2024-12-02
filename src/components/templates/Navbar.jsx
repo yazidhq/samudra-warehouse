@@ -138,7 +138,7 @@ const Navbar = ({ children, title }) => {
                   <li className="nav-item">
                     <a className="nav-link d-flex align-items-center gap-2 text-primary">
                       <CgProfile className="fs-3" />
-                      Nama Admin
+                      {user.data.name}
                     </a>
                   </li>
                   <li className="nav-item">
