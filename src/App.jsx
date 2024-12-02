@@ -34,7 +34,15 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   return children;
 };
 
-const user = jwtDecode(token);
+let user;
+if (token) {
+  try {
+    user = jwtDecode(token);
+  } catch (error) {
+    console.error("Invalid token:", error);
+    user = null;
+  }
+}
 
 function App() {
   return (
