@@ -16,8 +16,8 @@ const ValidasiPage = () => {
   const [validateList, setValidateList] = useState([]);
 
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("validateData")) || [];
-    setValidateList(storedData);
+    const storedData = JSON.parse(localStorage.getItem("validateData"));
+    setValidateList(storedData?.items || []);
   }, []);
 
   const handleTypeChange = (e) => {
@@ -40,7 +40,8 @@ const ValidasiPage = () => {
 
     setValidateList((prevProducts) => {
       const updatedList = [...prevProducts, data];
-      localStorage.setItem("validateData", JSON.stringify(updatedList));
+      const wrappedData = { items: updatedList };
+      localStorage.setItem("validateData", JSON.stringify(wrappedData));
       return updatedList;
     });
   };
@@ -48,7 +49,8 @@ const ValidasiPage = () => {
   const handleDelete = (index) => {
     setValidateList((prevList) => {
       const updatedList = prevList.filter((_, i) => i !== index);
-      localStorage.setItem("validateData", JSON.stringify(updatedList));
+      const wrappedData = { items: updatedList };
+      localStorage.setItem("validateData", JSON.stringify(wrappedData));
       return updatedList;
     });
   };
@@ -57,7 +59,8 @@ const ValidasiPage = () => {
     setValidateList((prevList) => {
       const updatedList = [...prevList];
       updatedList[index].quantity += 1;
-      localStorage.setItem("validateData", JSON.stringify(updatedList));
+      const wrappedData = { items: updatedList };
+      localStorage.setItem("validateData", JSON.stringify(wrappedData));
       return updatedList;
     });
   };
@@ -67,29 +70,50 @@ const ValidasiPage = () => {
       const updatedList = [...prevList];
       if (updatedList[index].quantity > 1) {
         updatedList[index].quantity -= 1;
-        localStorage.setItem("validateData", JSON.stringify(updatedList));
+        const wrappedData = { items: updatedList };
+        localStorage.setItem("validateData", JSON.stringify(wrappedData));
       }
       return updatedList;
     });
   };
 
   const handleValidate = async () => {
-    const data = validateList;
+    const payload = { items: validateList };
 
     try {
-      await axios.post(`${import.meta.env.VITE_BASE_URL}/stock/check`, data, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/stock/check`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
-      Swal.fire({
-        icon: "success",
-        title: "Success!",
-        text: "Stock validated successfully!",
-      }).then(() => {
-        navigate("/barang");
-      });
+      const invalidItems = response.data.data.filter((item) => !item.valid);
+
+      if (invalidItems.length > 0) {
+        const invalidMessages = invalidItems
+          .map(
+            (item) =>
+              `Product Code: ${item.productCode} has insufficient stock.`
+          )
+          .join("\n");
+        Swal.fire({
+          icon: "error",
+          title: "Validation Failed",
+          text: `The following items are invalid:\n${invalidMessages}`,
+        });
+      } else {
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Stock validated successfully!",
+        }).then(() => {
+          navigate("/barang");
+        });
+      }
     } catch (error) {
       Swal.fire({
         icon: "error",
@@ -167,6 +191,7 @@ const ValidasiPage = () => {
                             type="number"
                             className="form-control"
                             name="quantity"
+                            min="1" // Ensure quantity cannot be less than 1
                           />
                         </div>
                       )}
@@ -191,58 +216,59 @@ const ValidasiPage = () => {
         <hr />
         <div className="mb-4">
           <div className="row row-cols-2 row-cols-lg-2 g-2 g-lg-3">
-            {validateList.map((v, index) => {
-              const productDetails = product?.data?.find(
-                (item) => item.code === v.productCode
-              );
+            {Array.isArray(validateList) &&
+              validateList.map((v, index) => {
+                const productDetails = product?.data?.find(
+                  (item) => item.code === v.productCode
+                );
 
-              const headerBgColor =
-                v.quantity < productDetails?.quantity
-                  ? "bg-primary"
-                  : "bg-danger";
+                const headerBgColor =
+                  v.quantity < productDetails?.quantity
+                    ? "bg-primary"
+                    : "bg-danger";
 
-              return (
-                <div className="card border-0" key={index}>
-                  <div
-                    className={`card-header ${headerBgColor} text-white fw-medium d-flex justify-content-between align-items-center`}
-                  >
-                    <div>
-                      {v.productCode} ({productDetails?.quantity})
+                return (
+                  <div className="card border-0" key={index}>
+                    <div
+                      className={`card-header ${headerBgColor} text-white fw-medium d-flex justify-content-between align-items-center`}
+                    >
+                      <div>
+                        {v.productCode} ({productDetails?.quantity})
+                      </div>
+                      <div>
+                        <MdDelete
+                          className="fs-2 text-danger bg-white rounded-1 p-1"
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleDelete(index)}
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <MdDelete
-                        className="fs-2 text-danger bg-white rounded-1 p-1"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => handleDelete(index)}
-                      />
+                    <div className="card-body border rounded-bottom">
+                      <h5 className="card-title">{productDetails?.name}</h5>
+                      <p className="card-text">
+                        {productDetails?.unit_size.name}{" "}
+                        {productDetails?.unit.name}
+                      </p>
+                      <div className="d-flex justify-content-end align-items-center gap-3">
+                        <FiMinus
+                          className="fs-3 border border-1 border-dark rounded-circle"
+                          onClick={() => handleDecreaseQuantity(index)}
+                        />
+                        <input
+                          type="number"
+                          className="text-center border-0 rounded bg-secondary py-2"
+                          value={v.quantity}
+                          disabled
+                        />
+                        <FiPlus
+                          className="fs-3 border border-1 border-dark rounded-circle"
+                          onClick={() => handleIncreaseQuantity(index)}
+                        />
+                      </div>
                     </div>
                   </div>
-                  <div className="card-body border rounded-bottom">
-                    <h5 className="card-title">{productDetails?.name}</h5>
-                    <p className="card-text">
-                      {productDetails?.unit_size.name}{" "}
-                      {productDetails?.unit.name}
-                    </p>
-                    <div className="d-flex justify-content-end align-items-center gap-3">
-                      <FiMinus
-                        className="fs-3 border border-1 border-dark rounded-circle"
-                        onClick={() => handleDecreaseQuantity(index)}
-                      />
-                      <input
-                        type="number"
-                        className="text-center border-0 rounded bg-secondary py-2"
-                        value={v.quantity}
-                        disabled
-                      />
-                      <FiPlus
-                        className="fs-3 border border-1 border-dark rounded-circle"
-                        onClick={() => handleIncreaseQuantity(index)}
-                      />
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
           <div className="d-flex justify-content-between mb-3 mt-5">
             <Button color={"primary"} onClick={handleValidate}>
