@@ -14,7 +14,7 @@ const Navbar = ({ children, title }) => {
   const location = useLocation();
   const { handleLogout } = useAuth();
 
-  const nama = jwtDecode(localStorage.getItem("token"));
+  const user = jwtDecode(localStorage.getItem("token"));
 
   return (
     <div>
@@ -30,7 +30,7 @@ const Navbar = ({ children, title }) => {
         </a>
         <div className="col-md-3 col-lg-2 px-4 fs-6 text-white text-end text-decoration-none">
           <CgProfile className="fs-3 mx-2 mb-1" />
-          {nama.data.name}
+          {user.data.name}
         </div>
       </header>
 
@@ -65,63 +65,69 @@ const Navbar = ({ children, title }) => {
                       Beranda
                     </Link>
                   </li>
-                  <li
-                    className={`nav-item py-2 ${
-                      location.pathname.includes("/barang")
-                        ? "bg-primary rounded-2"
-                        : ""
-                    }`}
-                  >
-                    <Link
-                      className={`nav-link d-flex align-items-center gap-2 ${
-                        location.pathname.includes("/barang")
-                          ? "text-white"
-                          : "text-primary"
-                      }`}
-                      to={"/barang"}
-                    >
-                      <FaDatabase className="fs-5" />
-                      Master
-                    </Link>
-                  </li>
-                  <li
-                    className={`nav-item py-2 ${
-                      location.pathname.includes("/transaksi")
-                        ? "bg-primary rounded-2"
-                        : ""
-                    }`}
-                  >
-                    <Link
-                      className={`nav-link d-flex align-items-center gap-2 ${
-                        location.pathname.includes("/transaksi")
-                          ? "text-white"
-                          : "text-primary"
-                      }`}
-                      to={"/transaksi"}
-                    >
-                      <IoNewspaper className="fs-5" />
-                      Transaksi
-                    </Link>
-                  </li>
-                  <li
-                    className={`nav-item py-2 ${
-                      location.pathname.includes("/validasi")
-                        ? "bg-primary rounded-2"
-                        : ""
-                    }`}
-                  >
-                    <Link
-                      className={`nav-link d-flex align-items-center gap-2 ${
+                  {user.data.role == 1 && (
+                    <div>
+                      <li
+                        className={`nav-item py-2 ${
+                          location.pathname.includes("/barang")
+                            ? "bg-primary rounded-2"
+                            : ""
+                        }`}
+                      >
+                        <Link
+                          className={`nav-link d-flex align-items-center gap-2 ${
+                            location.pathname.includes("/barang")
+                              ? "text-white"
+                              : "text-primary"
+                          }`}
+                          to={"/barang"}
+                        >
+                          <FaDatabase className="fs-5" />
+                          Master
+                        </Link>
+                      </li>
+                      <li
+                        className={`nav-item py-2 ${
+                          location.pathname.includes("/transaksi")
+                            ? "bg-primary rounded-2"
+                            : ""
+                        }`}
+                      >
+                        <Link
+                          className={`nav-link d-flex align-items-center gap-2 ${
+                            location.pathname.includes("/transaksi")
+                              ? "text-white"
+                              : "text-primary"
+                          }`}
+                          to={"/transaksi"}
+                        >
+                          <IoNewspaper className="fs-5" />
+                          Transaksi
+                        </Link>
+                      </li>
+                    </div>
+                  )}
+                  {user.data.role == 2 && (
+                    <li
+                      className={`nav-item py-2 ${
                         location.pathname.includes("/validasi")
-                          ? "text-white"
-                          : "text-primary"
+                          ? "bg-primary rounded-2"
+                          : ""
                       }`}
-                      to={"/validasi"}
                     >
-                      <FaRegFolderClosed className="fs-5" />
-                      Cek Validasi Stok
-                    </Link>
-                  </li>
+                      <Link
+                        className={`nav-link d-flex align-items-center gap-2 ${
+                          location.pathname.includes("/validasi")
+                            ? "text-white"
+                            : "text-primary"
+                        }`}
+                        to={"/validasi"}
+                      >
+                        <FaRegFolderClosed className="fs-5" />
+                        Cek Validasi Stok
+                      </Link>
+                    </li>
+                  )}
                 </ul>
 
                 <ul
