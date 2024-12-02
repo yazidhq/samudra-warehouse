@@ -21,7 +21,36 @@ const DashboardPage = () => {
 
   return (
     <Navbar title="Dashboard">
-      <div className="shadow rounded-3 bg-white p-4 pb-2">
+      {user.data.role === 1 && (
+        <div className="mb-3">
+          <div className="row g-3">
+            <div className="col-12 col-md-6 col-lg-6">
+              <div className="rounded-3 bg-white p-4 shadow-sm d-flex justify-content-between align-items-center">
+                <h5 className="card-title mb-0">Total Barang</h5>
+                <div
+                  className="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center"
+                  style={{ width: "50px", height: "50px" }}
+                >
+                  <span className="fs-5">20</span>
+                </div>
+              </div>
+            </div>
+            <div className="col-12 col-md-6 col-lg-6">
+              <div className="rounded-3 bg-white p-4 shadow-sm d-flex justify-content-between align-items-center">
+                <h5 className="card-title mb-0">Transaksi Keluar</h5>
+                <div
+                  className="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center"
+                  style={{ width: "50px", height: "50px" }}
+                >
+                  <span className="fs-5">40</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="shadow-sm rounded-3 bg-white p-4 pb-2 mb-3">
         {user.data.role === 1 ? (
           <>
             <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
