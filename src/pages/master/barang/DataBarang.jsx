@@ -7,10 +7,12 @@ import { Link } from "react-router-dom";
 import { useProduct } from "../../../context/ProductContext";
 import { AiOutlineMenu } from "react-icons/ai";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 
 const DataBarang = () => {
   const { setProduct, product, handleDelete } = useProduct();
+  const [productHistory, setProductHistory] = useState(null);
 
   useEffect(() => {
     const params = {
@@ -36,6 +38,26 @@ const DataBarang = () => {
       console.log("Error get product:", error);
     }
   }, []);
+
+  const handleHistory = async (id) => {
+    const params = {
+      page: 1,
+      dataPerPage: 1000,
+      productId: id,
+    };
+
+    const response = await axios.get(
+      "https://api.samudraperkasa.my.id/api/product/history/list",
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        params,
+      }
+    );
+
+    setProductHistory(response);
+  };
 
   const columns = [
     { name: "Kode Barang", selector: (row) => row.kode_barang, sortable: true },
@@ -65,6 +87,7 @@ const DataBarang = () => {
             className="btn btn-info"
             data-bs-toggle="modal"
             data-bs-target={`#historyModal${row.id}`}
+            onClick={() => handleHistory(row.id)}
           >
             <AiOutlineMenu className="d-flex align-items-center" />
           </button>
@@ -122,10 +145,33 @@ const DataBarang = () => {
                   className="modal-title fs-5"
                   id={`historyModalLabel${row.id}`}
                 >
-                  History Transaksi
+                  Product's History
                 </h1>
               </div>
-              <div className="modal-body">{row.kode_barang}</div>
+              <div className="modal-body">
+                {productHistory &&
+                  productHistory.data.data.data.map((v) => {
+                    return (
+                      <div key={v.id}>
+                        <div className="card mb-3">
+                          <div className="card-body  d-flex justify-content-between">
+                            <div>
+                              {v.deliveryOrderNumber &&
+                                "[" + v.deliveryOrderNumber + "]"}{" "}
+                              {v.reason}:{" "}
+                              {v.quantityChange > 0
+                                ? "+" + v.quantityChange
+                                : v.quantityChange}
+                            </div>
+                            <div>
+                              {dayjs(v.timestamp).format("DD MMMM YYYY HH:mm")}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
             </div>
           </div>
         </div>
