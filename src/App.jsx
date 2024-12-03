@@ -23,7 +23,9 @@ const token = localStorage.getItem("token");
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const token = localStorage.getItem("token");
-  if (!token) return <Navigate to="/login" />;
+  const currentTime = Date.now() / 1000;
+  if (!token || jwtDecode(token).exp < currentTime)
+    return <Navigate to="/login" />;
 
   const user = jwtDecode(token);
 
