@@ -1,41 +1,40 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 
-const BarChart = ({ selectedYear }) => {
+const BarChart = ({ selectedYear, data }) => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
-  useEffect(() => {
-    const yearData = {
-      2023: [
-        { month: "Januari", count: 10 },
-        { month: "Februari", count: 20 },
-        { month: "Maret", count: 15 },
-        { month: "April", count: 25 },
-        { month: "Mei", count: 22 },
-        { month: "Juni", count: 27 },
-        { month: "Juli", count: 24 },
-        { month: "Agustus", count: 14 },
-        { month: "September", count: 6 },
-        { month: "November", count: 20 },
-        { month: "Desember", count: 16 },
-      ],
-      2024: [
-        { month: "Januari", count: 20 },
-        { month: "Februari", count: 10 },
-        { month: "Maret", count: 27 },
-        { month: "April", count: 5 },
-        { month: "Mei", count: 18 },
-        { month: "Juni", count: 29 },
-        { month: "Juli", count: 20 },
-        { month: "Agustus", count: 10 },
-        { month: "September", count: 28 },
-        { month: "November", count: 26 },
-        { month: "Desember", count: 13 },
-      ],
-    };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBar, setSelectedBar] = useState(null);
+  const [isFadingOut, setIsFadingOut] = useState(false);
 
-    const month = yearData[selectedYear] || [];
+  const handleBarClick = (event) => {
+    const points = chartInstance.current.getElementsAtEventForMode(
+      event,
+      "nearest",
+      { intersect: true },
+      false
+    );
+
+    if (points.length) {
+      const index = points[0].index;
+      const clickedMonth = data.transactionData[index];
+      setSelectedBar(clickedMonth);
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleCloseBar = () => {
+    setIsFadingOut(true);
+    setTimeout(() => {
+      setIsModalOpen(false);
+      setIsFadingOut(false);
+    }, 500);
+  };
+
+  useEffect(() => {
+    const yearData = data && data.transactionData;
 
     if (chartInstance.current) {
       chartInstance.current.destroy();
@@ -44,33 +43,88 @@ const BarChart = ({ selectedYear }) => {
     chartInstance.current = new Chart(chartRef.current, {
       type: "bar",
       data: {
-        labels: month.map((row) => row.month),
+        labels: yearData && yearData.map((row) => row.monthWord),
         datasets: [
           {
-            data: month.map((row) => row.count),
+            label: "Total Transaksi",
+            data: yearData && yearData.map((row) => row.count),
             backgroundColor: "#dc3530",
-            barPercentage: 0.3,
+            barPercentage: 0.5,
             categoryPercentage: 0.5,
           },
         ],
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: true,
+        aspectRatio: 5,
         plugins: {
           legend: {
             display: false,
           },
         },
+        onClick: handleBarClick,
       },
     });
 
     return () => {
       chartInstance.current.destroy();
     };
-  }, [selectedYear]);
+  }, [selectedYear, data]);
 
-  return <canvas ref={chartRef} />;
+  return (
+    <>
+      <canvas ref={chartRef} />
+      {isModalOpen && selectedBar && (
+        <div
+          className={`modal bg-soft-dark ${
+            isFadingOut ? "fade-out" : "fade-in"
+          }`}
+          style={{ display: isModalOpen ? "block" : "none" }}
+        >
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header d-flex justify-content-between">
+                <h5 className="modal-title">{selectedBar.monthWord}</h5>
+                <h5 className="modal-title">{selectedBar.count} Transaksi</h5>
+              </div>
+              <div className="modal-body">
+                <div>
+                  <div className="card mb-3 bg-primary py-0 text-white fw-bold">
+                    <div className="card-body d-flex justify-content-between">
+                      <div>No Surat Jalan</div>
+                      <div>Kuantitas Barang</div>
+                    </div>
+                  </div>
+                  {selectedBar.details.map((v) => (
+                    <div key={v.id}>
+                      <div className="card mb-3">
+                        <div className="card-body d-flex justify-content-between">
+                          <div className="fw-medium">
+                            {v.deliveryOrderNumber}
+                          </div>
+                          <div>{v.totalQuantity}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={handleCloseBar}
+                >
+                  Tutup
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default BarChart;

@@ -144,12 +144,17 @@
   border-color: #034996 !important;
 }
 
+.btn-light {
+  background-color: #fff !important;
+  border-color: #fff !important;
+}
+
 .text-primary {
   color: #034996 !important;
 }
 
 .bg-grey {
-  background-color: #f3f6f9 !important;
+  background-color: #e9f0f5 !important;
 }
 
 .bg-info {
@@ -157,9 +162,39 @@
 }
 
 .bg-primary {
-  background-color: #154fb2 !important;
+  background-color: #034996 !important;
 }
 
 .bg-secondary {
   background-color: #dbdbdb !important;
+}
+
+.bg-soft-dark {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.fade-in {
+  animation: scaling 0.3s forwards;
+}
+
+@keyframes scaling {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fade-out {
+  animation: fadeOut 0.3s forwards;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
