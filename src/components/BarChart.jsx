@@ -96,8 +96,8 @@ const BarChart = ({ selectedYear, data }) => {
                       <div>Kuantitas Barang</div>
                     </div>
                   </div>
-                  {selectedBar.details.map((v) => (
-                    <div key={v.id}>
+                  {selectedBar.details.map((v, index) => (
+                    <div key={`${v.deliveryOrderNumber}-${index}`}>
                       <div className="card mb-3">
                         <div className="card-body d-flex justify-content-between">
                           <div className="fw-medium">
