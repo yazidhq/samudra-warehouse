@@ -53,7 +53,7 @@ const LoginPage = () => {
       ></div>
 
       <div
-        className="card rounded-4 border-0 shadow"
+        className="card rounded-4 border-0"
         style={{ width: "40rem", zIndex: 1 }}
       >
         <div className="card-body pt-5 px-5 pb-5">

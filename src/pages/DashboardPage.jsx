@@ -130,7 +130,7 @@ const DashboardPage = () => {
           </div>
         </>
       ) : (
-        <div className="shadow-sm rounded-3 bg-white p-4 pb-2">
+        <div className="rounded-3 bg-white p-4 pb-2">
           <div className="p-4 text-center">
             <h1>Selamat datang di sistem gudang</h1>
             <p className="fs-3">

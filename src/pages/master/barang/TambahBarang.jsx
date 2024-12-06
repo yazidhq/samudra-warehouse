@@ -11,7 +11,7 @@ const TambahBarang = () => {
   return (
     <Navbar title="Item">
       <form onSubmit={handleCreate}>
-        <div className="shadow rounded-3 bg-white p-4 pb-2">
+        <div className="rounded-3 bg-white p-4 pb-2">
           <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
             <h1 className="h4">Form Item</h1>
           </div>

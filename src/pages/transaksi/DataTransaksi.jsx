@@ -109,7 +109,7 @@ const DataTransaksi = () => {
 
   return (
     <Navbar title="Transaksi">
-      <div className="shadow rounded-3 bg-white p-4 pb-2">
+      <div className="rounded-3 bg-white p-4 pb-2">
         <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
           <h1 className="h4">Daftar Transaksi</h1>
           <div className="btn-toolbar mb-2 mb-md-0">
