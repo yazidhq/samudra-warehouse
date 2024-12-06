@@ -1,5 +1,5 @@
 import { FaPlus } from "react-icons/fa";
-import { MdDelete, MdOutlineEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import Navbar from "../../components/templates/Navbar";
 import Button from "../../components/Button";
 import Table from "../../components/Table";
@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useProduct } from "../../context/ProductContext";
 import Swal from "sweetalert2";
+import { useRef } from "react";
 
 const ItemTransaksi = () => {
   const { product, type } = useProduct();
@@ -16,11 +17,12 @@ const ItemTransaksi = () => {
   const [selectedType, setSelectedType] = useState("");
   const [transactionItem, setTransactionItem] = useState([]);
   const { id } = useParams();
+  const formRef = useRef(null);
 
   const handleCreateItem = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_BASE_URL}/transaction/${id}/add-item`,
         {
           productCode: e.target.productCode.value,
@@ -33,12 +35,21 @@ const ItemTransaksi = () => {
         }
       );
 
-      setTransactionItem((prevItems) => {
-        if (Array.isArray(prevItems)) {
-          return [...prevItems, response.data.data];
-        }
-        return [response.data.data];
-      });
+      fetchTransactionsItem();
+
+      if (formRef.current) {
+        formRef.current.reset();
+      }
+
+      setSelectedType("");
+      setFilteredProducts([]);
+
+      document
+        .getElementById("exampleModal")
+        .classList.remove("show", "d-block");
+      document
+        .querySelectorAll(".modal-backdrop")
+        .forEach((el) => el.classList.remove("modal-backdrop"));
 
       Swal.fire({
         icon: "success",
@@ -84,6 +95,8 @@ const ItemTransaksi = () => {
           return [response.data.data];
         });
 
+        fetchTransactionsItem();
+
         Swal.fire({
           icon: "success",
           title: "Deleted!",
@@ -99,29 +112,30 @@ const ItemTransaksi = () => {
     }
   };
 
-  useEffect(() => {
+  const fetchTransactionsItem = async () => {
     const params = {
       page: 1,
       dataPerPage: 1000,
     };
 
     try {
-      const fetchTransactionsItem = async () => {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/transaction/${id}/items`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            params,
-          }
-        );
-        setTransactionItem(response.data.data);
-      };
-      fetchTransactionsItem();
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/transaction/${id}/items`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          params,
+        }
+      );
+      setTransactionItem(response.data.data);
     } catch (error) {
       console.log("Error get Transactions Item:", error);
     }
+  };
+
+  useEffect(() => {
+    fetchTransactionsItem();
   }, []);
 
   const handleTypeChange = (e) => {
@@ -148,9 +162,6 @@ const ItemTransaksi = () => {
       name: "Aksi",
       cell: (row) => (
         <div className="d-flex gap-1">
-          {/* <Button color={"warning"}>
-            <MdOutlineEdit className="d-flex align-items-center" />
-          </Button> */}
           <Button
             color={"danger"}
             onClick={() => handleDeleteItem(row.kode_barang)}
@@ -214,7 +225,7 @@ const ItemTransaksi = () => {
                       Tambah Item
                     </h1>
                   </div>
-                  <form onSubmit={handleCreateItem}>
+                  <form ref={formRef} onSubmit={handleCreateItem}>
                     <div className="modal-body">
                       <div className="mb-3">
                         <label className="form-label mt-2">Jenis Barang</label>
