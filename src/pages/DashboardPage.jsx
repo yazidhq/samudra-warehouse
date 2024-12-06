@@ -23,11 +23,11 @@ const DashboardPage = () => {
 
   useEffect(() => {
     const params = {
-      year: selectedYear ? selectedYear : 2024,
+      year: selectedYear ? selectedYear : currentYear,
     };
 
-    try {
-      const fetchDashboard = async () => {
+    const fetchDashboard = async () => {
+      try {
         const response = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/dashboard/data`,
           {
@@ -38,12 +38,13 @@ const DashboardPage = () => {
           }
         );
         setDashboardData(response.data.data);
-      };
-      fetchDashboard();
-    } catch (error) {
-      console.log("Error get Dashboard:", error);
-    }
-  }, []);
+      } catch (error) {
+        console.log("Error get Dashboard:", error);
+      }
+    };
+
+    fetchDashboard();
+  }, [selectedYear]);
 
   return (
     <Navbar title="Dashboard">
