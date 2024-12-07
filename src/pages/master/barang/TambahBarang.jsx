@@ -4,9 +4,26 @@ import Navbar from "../../../components/templates/Navbar";
 import { FaArrowLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useProduct } from "../../../context/ProductContext";
+import { useEffect } from "react";
 
 const TambahBarang = () => {
-  const { unit, unitSize, type, handleCreate } = useProduct();
+  const {
+    unit,
+    unitSize,
+    type,
+    handleCreate,
+    fetchProducts,
+    fetchUnit,
+    fetchUnitSize,
+    fetchType,
+  } = useProduct();
+
+  useEffect(() => {
+    fetchProducts();
+    fetchUnit();
+    fetchUnitSize();
+    fetchType();
+  }, []);
 
   return (
     <Navbar title="Item">

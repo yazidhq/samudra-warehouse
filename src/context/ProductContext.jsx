@@ -1,5 +1,5 @@
 import axios from "axios";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -14,76 +14,76 @@ export const ProductProvider = ({ children }) => {
   const [type, setType] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const params = {
-      page: 1,
-      dataPerPage: 1000,
-    };
-
-    const header = {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    };
-
-    const token = localStorage.getItem("token");
-
+  const fetchProducts = async () => {
     try {
-      if (token) {
-        const fetchProducts = async () => {
-          const response = await axios.get(
-            `${import.meta.env.VITE_BASE_URL}/product/list`,
-            {
-              headers: header,
-              params,
-            }
-          );
-          setProduct(response.data.data);
-        };
-        fetchProducts();
-
-        const fetchUnit = async () => {
-          const response = await axios.get(
-            `${import.meta.env.VITE_BASE_URL}/dropdown/unit/list`,
-            {
-              headers: header,
-              params,
-            }
-          );
-          setUnit(response.data.data);
-        };
-        fetchUnit();
-
-        const fetchUnitSize = async () => {
-          const response = await axios.get(
-            `${import.meta.env.VITE_BASE_URL}/dropdown/unit-size/list`,
-            {
-              headers: header,
-              params,
-            }
-          );
-          setUnitSize(response.data.data);
-        };
-        fetchUnitSize();
-
-        const fetchType = async () => {
-          const response = await axios.get(
-            `${import.meta.env.VITE_BASE_URL}/dropdown/type/list`,
-            {
-              headers: header,
-              params,
-            }
-          );
-          setType(response.data.data);
-        };
-        fetchType();
-      }
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/product/list`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          params: { page: 1, dataPerPage: 1000 },
+        }
+      );
+      setProduct(response.data.data);
     } catch (error) {
-      console.log("Error get product:", error);
+      console.error("Error fetching products:", error);
     }
-  }, [localStorage.getItem("token")]);
+  };
+
+  const fetchUnit = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/dropdown/unit/list`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          params: { page: 1, dataPerPage: 1000 },
+        }
+      );
+      setUnit(response.data.data);
+    } catch (error) {
+      console.error("Error fetching units:", error);
+    }
+  };
+
+  const fetchUnitSize = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/dropdown/unit-size/list`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          params: { page: 1, dataPerPage: 1000 },
+        }
+      );
+      setUnitSize(response.data.data);
+    } catch (error) {
+      console.error("Error fetching unit sizes:", error);
+    }
+  };
+
+  const fetchType = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/dropdown/type/list`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          params: { page: 1, dataPerPage: 1000 },
+        }
+      );
+      setType(response.data.data);
+    } catch (error) {
+      console.error("Error fetching types:", error);
+    }
+  };
 
   const handleCreate = async (e) => {
     e.preventDefault();
-
     const data = {
       code: e.target.code.value,
       typeId: parseInt(e.target.typeId.value),
@@ -94,7 +94,7 @@ export const ProductProvider = ({ children }) => {
     };
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_BASE_URL}/product/create`,
         data,
         {
@@ -103,35 +103,16 @@ export const ProductProvider = ({ children }) => {
           },
         }
       );
-
-      setProduct((prevProducts) => {
-        if (Array.isArray(prevProducts)) {
-          return [...prevProducts, response.data.data];
-        }
-        return [response.data.data];
-      });
-
-      Swal.fire({
-        icon: "success",
-        title: "Success!",
-        text: "Product created successfully!",
-      }).then(() => {
-        navigate("/barang");
-      });
+      Swal.fire("Success!", "Product created successfully!", "success");
+      await fetchProducts();
+      navigate("/barang");
     } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to create product.",
-      }).then(() => {
-        navigate("/barang");
-      });
+      Swal.fire("Error", "Failed to create product.", "error");
     }
   };
 
   const handleUpdate = async (e, productId) => {
     e.preventDefault();
-
     const updatedData = {
       code: e.target.code.value,
       typeId: parseInt(e.target.typeId.value),
@@ -142,7 +123,7 @@ export const ProductProvider = ({ children }) => {
     };
 
     try {
-      const response = await axios.put(
+      await axios.put(
         `${import.meta.env.VITE_BASE_URL}/product/update/${productId}`,
         updatedData,
         {
@@ -151,20 +132,11 @@ export const ProductProvider = ({ children }) => {
           },
         }
       );
-
-      setProduct((prevProducts) => {
-        if (prevProducts?.data) {
-          const updatedProducts = prevProducts.data.map((product) =>
-            product.id === parseInt(productId) ? response.data.data : product
-          );
-          return { ...prevProducts, data: updatedProducts };
-        }
-        return prevProducts;
-      });
-
+      Swal.fire("Success!", "Product updated successfully!", "success");
+      await fetchProducts();
       navigate("/barang");
     } catch (error) {
-      navigate("/barang");
+      Swal.fire("Error", "Failed to update product.", "error");
     }
   };
 
@@ -188,25 +160,10 @@ export const ProductProvider = ({ children }) => {
             },
           }
         );
-
-        setProduct((prevProducts) => {
-          if (Array.isArray(prevProducts)) {
-            return prevProducts.filter((item) => item.id !== id);
-          }
-          return [];
-        });
-
-        Swal.fire({
-          icon: "success",
-          title: "Deleted!",
-          text: "The product has been deleted.",
-        });
+        Swal.fire("Deleted!", "The product has been deleted.", "success");
+        await fetchProducts();
       } catch (error) {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to delete product.",
-        });
+        Swal.fire("Error", "Failed to delete product.", "error");
       }
     }
   };
@@ -214,11 +171,14 @@ export const ProductProvider = ({ children }) => {
   return (
     <ProductContext.Provider
       value={{
-        setProduct,
         product,
         unit,
         unitSize,
         type,
+        fetchProducts,
+        fetchUnit,
+        fetchUnitSize,
+        fetchType,
         handleCreate,
         handleUpdate,
         handleDelete,

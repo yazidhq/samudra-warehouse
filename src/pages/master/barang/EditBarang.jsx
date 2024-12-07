@@ -8,8 +8,25 @@ import { useProduct } from "../../../context/ProductContext";
 
 const EditBarang = () => {
   const { id } = useParams();
-  const { product, type, unit, unitSize, handleUpdate } = useProduct();
+  const {
+    product,
+    type,
+    unit,
+    unitSize,
+    handleUpdate,
+    fetchProducts,
+    fetchUnit,
+    fetchUnitSize,
+    fetchType,
+  } = useProduct();
   const [currentProduct, setCurrentProduct] = useState(null);
+
+  useEffect(() => {
+    fetchProducts();
+    fetchUnit();
+    fetchUnitSize();
+    fetchType();
+  }, []);
 
   useEffect(() => {
     if (product?.data?.length) {

@@ -6,57 +6,45 @@ import { MdDelete, MdOutlineEdit } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { useProduct } from "../../../context/ProductContext";
 import { AiOutlineMenu } from "react-icons/ai";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import axios from "axios";
 
 const DataBarang = () => {
-  const { setProduct, product, handleDelete } = useProduct();
+  const {
+    fetchProducts,
+    fetchUnit,
+    fetchUnitSize,
+    fetchType,
+    product,
+    handleDelete,
+  } = useProduct();
   const [productHistory, setProductHistory] = useState(null);
 
   useEffect(() => {
-    const params = {
-      page: 1,
-      dataPerPage: 1000,
-    };
-
-    try {
-      const fetchProducts = async () => {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/product/list`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            params,
-          }
-        );
-        setProduct(response.data.data);
-      };
-      fetchProducts();
-    } catch (error) {
-      console.log("Error get product:", error);
-    }
+    fetchProducts();
+    fetchUnit();
+    fetchUnitSize();
+    fetchType();
   }, []);
 
   const handleHistory = async (id) => {
-    const params = {
-      page: 1,
-      dataPerPage: 1000,
-      productId: id,
-    };
-
-    const response = await axios.get(
-      "https://api.samudraperkasa.my.id/api/product/history/list",
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        params,
-      }
-    );
-
-    setProductHistory(response);
+    try {
+      const response = await axios.get(
+        "https://api.samudraperkasa.my.id/api/product/history/list",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          params: { page: 1, dataPerPage: 1000, productId: id },
+        }
+      );
+      console.log("History response:", response.data);
+      setProductHistory(response.data.data.data);
+    } catch (error) {
+      console.error("Error fetching history:", error);
+    } finally {
+    }
   };
 
   const columns = [
@@ -104,28 +92,17 @@ const DataBarang = () => {
     },
   ];
 
-  const products = product?.data || [];
-  const record = [];
+  const record = (product?.data || []).map((v) => ({
+    id: v.id,
+    kode_barang: v.code || "No code",
+    jenis_barang: v.type?.name || "No type",
+    nama_barang: v.name || "No name",
+    satuan_barang: v.unit?.name || "No unit",
+    ukuran_barang: v.unit_size?.name || "No size",
+    stok_barang: v.quantity || 0,
+  }));
 
-  products.map((v) => {
-    if (v && v.id) {
-      record.push({
-        id: v.id,
-        kode_barang: v.code || "No code",
-        jenis_barang: v.type?.name || "No type",
-        nama_barang: v.name || "No name",
-        satuan_barang: v.unit?.name || "No unit",
-        ukuran_barang: v.unit_size?.name || "No size",
-        stok_barang: v.quantity || 0,
-      });
-    }
-  });
-
-  record.sort((a, b) => {
-    if (a.kode_barang > b.kode_barang) return -1;
-    if (a.kode_barang < b.kode_barang) return 1;
-    return 0;
-  });
+  record.sort((a, b) => b.kode_barang.localeCompare(a.kode_barang));
 
   return (
     <Navbar title="Item">
@@ -149,28 +126,27 @@ const DataBarang = () => {
                 </h1>
               </div>
               <div className="modal-body">
-                {productHistory &&
-                  productHistory.data.data.data.map((v) => {
-                    return (
-                      <div key={v.id}>
-                        <div className="card mb-3">
-                          <div className="card-body  d-flex justify-content-between">
-                            <div>
-                              {v.deliveryOrderNumber &&
-                                "[" + v.deliveryOrderNumber + "]"}{" "}
-                              {v.reason}:{" "}
-                              {v.quantityChange > 0
-                                ? "+" + v.quantityChange
-                                : v.quantityChange}
-                            </div>
-                            <div>
-                              {dayjs(v.timestamp).format("DD MMMM YYYY HH:mm")}
-                            </div>
-                          </div>
+                {productHistory && productHistory.length > 0 ? (
+                  productHistory.map((v) => (
+                    <div key={v.id} className="card mb-3">
+                      <div className="card-body d-flex justify-content-between">
+                        <div>
+                          {v.deliveryOrderNumber &&
+                            `[${v.deliveryOrderNumber}]`}{" "}
+                          {v.reason}:{" "}
+                          {v.quantityChange > 0
+                            ? `+${v.quantityChange}`
+                            : v.quantityChange}
+                        </div>
+                        <div>
+                          {dayjs(v.timestamp).format("DD MMMM YYYY HH:mm")}
                         </div>
                       </div>
-                    );
-                  })}
+                    </div>
+                  ))
+                ) : (
+                  <p>No history found for this product.</p>
+                )}
               </div>
             </div>
           </div>
