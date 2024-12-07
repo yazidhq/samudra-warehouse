@@ -36,7 +36,7 @@ const EditTransaksi = () => {
           <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
             <h1 className="h4">Detail Transaksi</h1>
             <div className="btn-toolbar mb-2 mb-md-0">
-              <Link to={"/transaksi/tambah_transaksi/item_transaksi"}>
+              <Link to={`/transaksi/${currentTransaction.id}/item_transaksi`}>
                 <Button color={"primary"}>
                   <RiErrorWarningFill
                     className="fs-5 mb-1"
@@ -110,6 +110,19 @@ const EditTransaksi = () => {
                 className="form-control"
                 name="recipientName"
                 defaultValue={currentTransaction.recipientName}
+              />
+            </div>
+          </div>
+          <div className="mb-3 row">
+            <div className="col-2">
+              <label className="form-label mt-2">Total Kuantitas Barang</label>
+            </div>
+            <div className="col-10">
+              <input
+                readOnly
+                type="text"
+                className="form-control bg-secondary"
+                value={currentTransaction.totalQuantity}
               />
             </div>
           </div>

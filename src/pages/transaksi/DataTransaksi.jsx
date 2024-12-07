@@ -5,36 +5,14 @@ import { MdDelete, MdOutlineEdit } from "react-icons/md";
 import Button from "../../components/Button";
 import { Link } from "react-router-dom";
 import { useTransaction } from "../../context/TransactionContext";
-import axios from "axios";
 import { useEffect } from "react";
 import { AiFillDatabase } from "react-icons/ai";
 
 const DataTransaksi = () => {
-  const { setTransaction, transaction, handleDelete } = useTransaction();
+  const { transaction, fetchTransactions, handleDelete } = useTransaction();
 
   useEffect(() => {
-    const params = {
-      page: 1,
-      dataPerPage: 1000,
-    };
-
-    try {
-      const fetchTransactions = async () => {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/transaction/list`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            params,
-          }
-        );
-        setTransaction(response.data.data);
-      };
-      fetchTransactions();
-    } catch (error) {
-      console.log("Error get Transaction:", error);
-    }
+    fetchTransactions();
   }, []);
 
   const columns = [
@@ -64,6 +42,11 @@ const DataTransaksi = () => {
       sortable: true,
     },
     {
+      name: "Total Kuantitas Barang",
+      selector: (row) => row.total_kuantitas,
+      sortable: true,
+    },
+    {
       name: "Aksi",
       cell: (row) => (
         <div className="d-flex gap-1">
@@ -85,27 +68,17 @@ const DataTransaksi = () => {
     },
   ];
 
-  const transactions = transaction?.data || [];
-  const record = [];
+  const record = (transaction?.data || []).map((v) => ({
+    id: v.id,
+    no_surat_jalan: v.deliveryOrderNumber || "No deliveryOrderNumber",
+    nama_pengatur: v.organizerName || "No organizerName",
+    nama_penyetuju: v.approvalName || "No approvalName",
+    nama_pengirim: v.senderName || "No senderName",
+    nama_penerima: v.recipientName || "No recipientName",
+    total_kuantitas: v.totalQuantity || "No totalQuantity",
+  }));
 
-  transactions.map((v) => {
-    if (v && v.id) {
-      record.push({
-        id: v.id,
-        no_surat_jalan: v.deliveryOrderNumber || "No deliveryOrderNumber",
-        nama_pengatur: v.organizerName || "No typorganizerNamee",
-        nama_penyetuju: v.approvalName || "No approvalName",
-        nama_pengirim: v.senderName || "No senderName",
-        nama_penerima: v.recipientName || "No recipientName",
-      });
-    }
-  });
-
-  record.sort((a, b) => {
-    if (a.id > b.id) return -1;
-    if (a.id < b.id) return 1;
-    return 0;
-  });
+  record.sort((a, b) => b.id - a.id);
 
   return (
     <Navbar title="Transaksi">

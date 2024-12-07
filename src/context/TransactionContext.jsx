@@ -11,7 +11,7 @@ export const TransactionProvider = ({ children }) => {
   const [transaction, setTransaction] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const fetchTransactions = async () => {
     const params = {
       page: 1,
       dataPerPage: 1000,
@@ -21,26 +21,24 @@ export const TransactionProvider = ({ children }) => {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     };
 
-    const token = localStorage.getItem("token");
-
     try {
-      if (token) {
-        const fetchTransactions = async () => {
-          const response = await axios.get(
-            `${import.meta.env.VITE_BASE_URL}/transaction/list`,
-            {
-              headers: header,
-              params,
-            }
-          );
-          setTransaction(response.data.data);
-        };
-        fetchTransactions();
-      }
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/transaction/list`,
+        {
+          headers: header,
+          params,
+        }
+      );
+      setTransaction(response.data.data);
     } catch (error) {
       console.log("Error get Transaction:", error);
     }
-  }, [localStorage.getItem("token")]);
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) fetchTransactions();
+  }, []);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -150,18 +148,13 @@ export const TransactionProvider = ({ children }) => {
           }
         );
 
-        setTransaction((prevTransactions) => {
-          if (Array.isArray(prevTransactions)) {
-            return prevTransactions.filter((item) => item.id !== id);
-          }
-          return [];
-        });
-
         Swal.fire({
           icon: "success",
           title: "Deleted!",
           text: "The Transaction has been deleted.",
         });
+
+        fetchTransactions();
       } catch (error) {
         Swal.fire({
           icon: "error",
@@ -180,6 +173,7 @@ export const TransactionProvider = ({ children }) => {
         handleCreate,
         handleUpdate,
         handleDelete,
+        fetchTransactions,
       }}
     >
       {children}

@@ -3,7 +3,6 @@ import { FaArrowLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Button from "../../components/Button";
 import Navbar from "../../components/templates/Navbar";
-import { RiErrorWarningFill } from "react-icons/ri";
 import { useTransaction } from "../../context/TransactionContext";
 
 const TambahTransaksi = () => {
@@ -14,17 +13,6 @@ const TambahTransaksi = () => {
       <div className="rounded-3 bg-white p-4 pb-2">
         <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
           <h1 className="h4">Detail Transaksi</h1>
-          <div className="btn-toolbar mb-2 mb-md-0">
-            <Link to={"/transaksi/tambah_transaksi/item_transaksi"}>
-              <Button color={"primary"}>
-                <RiErrorWarningFill
-                  className="fs-5 mb-1"
-                  style={{ marginRight: "10px" }}
-                />
-                Item Transaksi
-              </Button>
-            </Link>
-          </div>
         </div>
         <hr />
         <form onSubmit={handleCreate}>
