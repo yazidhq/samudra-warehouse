@@ -84,7 +84,7 @@ const DashboardPage = () => {
               <div className="col-12 col-md-6 col-lg-6">
                 <div className="rounded-3 bg-white p-4 d-flex justify-content-between align-items-center">
                   <h4 className="card-title mb-0 fw-bold text-primary">
-                    Total Barang
+                    Total Barang Tersedia
                   </h4>
                   <div
                     className="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center"
@@ -99,7 +99,7 @@ const DashboardPage = () => {
               <div className="col-12 col-md-6 col-lg-6">
                 <div className="rounded-3 bg-white p-4 d-flex justify-content-between align-items-center">
                   <h4 className="card-title mb-0 fw-bold text-primary">
-                    Total Kuantitas Barang
+                    Total Kuantitas Barang Tersedia
                   </h4>
                   <div
                     className="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center"
