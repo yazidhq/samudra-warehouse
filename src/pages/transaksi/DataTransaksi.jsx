@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useTransaction } from "../../context/TransactionContext";
 import { useEffect } from "react";
 import { AiFillDatabase } from "react-icons/ai";
+import dayjs from "dayjs";
 
 const DataTransaksi = () => {
   const { transaction, fetchTransactions, handleDelete } = useTransaction();
@@ -19,6 +20,11 @@ const DataTransaksi = () => {
     {
       name: "No Surat Jalan",
       selector: (row) => row.no_surat_jalan,
+      sortable: true,
+    },
+    {
+      name: "Tanggal",
+      selector: (row) => row.createdAt,
       sortable: true,
     },
     {
@@ -37,7 +43,7 @@ const DataTransaksi = () => {
       sortable: true,
     },
     {
-      name: "Nama Penerima",
+      name: "Toko Penerima",
       selector: (row) => row.nama_penerima,
       sortable: true,
     },
@@ -72,6 +78,7 @@ const DataTransaksi = () => {
     id: v.id,
     no_surat_jalan: v.deliveryOrderNumber || "No deliveryOrderNumber",
     nama_pengatur: v.organizerName || "No organizerName",
+    createdAt: dayjs().format("DD-MM-YYYY") || "No createdAt",
     nama_penyetuju: v.approvalName || "No approvalName",
     nama_pengirim: v.senderName || "No senderName",
     nama_penerima: v.recipientName || "No recipientName",

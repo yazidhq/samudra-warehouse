@@ -58,7 +58,7 @@ const TambahTransaksi = () => {
           </div>
           <div className="mb-3 row">
             <div className="col-2">
-              <label className="form-label mt-2">Nama Penerima</label>
+              <label className="form-label mt-2">Toko Penerima</label>
             </div>
             <div className="col-10">
               <input

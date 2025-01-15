@@ -10,10 +10,15 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 const ValidasiPage = () => {
-  const { product, type } = useProduct();
+  const { product, type, fetchProducts, fetchType } = useProduct();
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedType, setSelectedType] = useState("");
   const [validateList, setValidateList] = useState([]);
+
+  useEffect(() => {
+    fetchProducts();
+    fetchType();
+  }, []);
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("validateData"));
@@ -110,8 +115,6 @@ const ValidasiPage = () => {
           icon: "success",
           title: "Success!",
           text: "Stock validated successfully!",
-        }).then(() => {
-          navigate("/barang");
         });
       }
     } catch (error) {
@@ -170,30 +173,30 @@ const ValidasiPage = () => {
                         </select>
                       </div>
                       {selectedType && (
-                        <div className="mb-3">
-                          <label className="form-label mt-2">Barang</label>
-                          <select className="form-control" name="productCode">
-                            <option value="">Pilih Barang</option>
-                            {filteredProducts.map((item) => (
-                              <option key={item.id} value={item.code}>
-                                {item.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                      )}
-                      {selectedType && (
-                        <div className="mb-3">
-                          <label className="form-label mt-2">
-                            Kuantitas Barang
-                          </label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            name="quantity"
-                            min="1" // Ensure quantity cannot be less than 1
-                          />
-                        </div>
+                        <>
+                          <div className="mb-3">
+                            <label className="form-label mt-2">Barang</label>
+                            <select className="form-control" name="productCode">
+                              <option value="">Pilih Barang</option>
+                              {filteredProducts.map((item) => (
+                                <option key={item.id} value={item.code}>
+                                  {item.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="mb-3">
+                            <label className="form-label mt-2">
+                              Kuantitas Barang
+                            </label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              name="quantity"
+                              min="1"
+                            />
+                          </div>
+                        </>
                       )}
                     </div>
                     {selectedType && (

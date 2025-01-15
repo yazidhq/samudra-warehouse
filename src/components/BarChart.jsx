@@ -47,7 +47,7 @@ const BarChart = ({ selectedYear, data }) => {
         datasets: [
           {
             label: "Total Transaksi",
-            data: yearData && yearData.map((row) => row.count),
+            data: yearData && yearData.map((row) => Math.round(row.count)),
             backgroundColor: "#dc3530",
             barPercentage: 0.5,
             categoryPercentage: 0.5,
@@ -61,6 +61,16 @@ const BarChart = ({ selectedYear, data }) => {
         plugins: {
           legend: {
             display: false,
+          },
+        },
+        scales: {
+          y: {
+            ticks: {
+              callback: function (value) {
+                return Number.isInteger(value) ? value : null;
+              },
+              stepSize: 1,
+            },
           },
         },
         onClick: handleBarClick,
@@ -86,7 +96,9 @@ const BarChart = ({ selectedYear, data }) => {
             <div className="modal-content">
               <div className="modal-header d-flex justify-content-between">
                 <h5 className="modal-title">{selectedBar.monthWord}</h5>
-                <h5 className="modal-title">{selectedBar.count} Transaksi</h5>
+                <h5 className="modal-title">
+                  {Math.round(selectedBar.count)} Transaksi
+                </h5>
               </div>
               <div className="modal-body">
                 <div>
@@ -103,7 +115,7 @@ const BarChart = ({ selectedYear, data }) => {
                           <div className="fw-medium">
                             {v.deliveryOrderNumber}
                           </div>
-                          <div>{v.totalQuantity}</div>
+                          <div>{Math.round(v.totalQuantity)}</div>
                         </div>
                       </div>
                     </div>

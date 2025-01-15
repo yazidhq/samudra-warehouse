@@ -28,16 +28,18 @@ const DashboardPage = () => {
 
     const fetchDashboard = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/dashboard/data`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-            params,
-          }
-        );
-        setDashboardData(response.data.data);
+        if (user.data.role === 1) {
+          const response = await axios.get(
+            `${import.meta.env.VITE_BASE_URL}/dashboard/data`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+              params,
+            }
+          );
+          setDashboardData(response.data.data);
+        }
       } catch (error) {
         console.log("Error get Dashboard:", error);
       }
