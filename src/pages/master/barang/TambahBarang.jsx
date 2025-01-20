@@ -26,11 +26,11 @@ const TambahBarang = () => {
   }, []);
 
   return (
-    <Navbar title="Item">
+    <Navbar title="Tambah Barang">
       <form onSubmit={handleCreate}>
         <div className="rounded-3 bg-white p-4 pb-2">
           <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
-            <h1 className="h4">Form Item</h1>
+            <h1 className="h4">Form Tambah Barang</h1>
           </div>
           <hr />
           <div className="mb-3 row">

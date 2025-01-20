@@ -88,15 +88,15 @@ const DataTransaksi = () => {
   record.sort((a, b) => b.id - a.id);
 
   return (
-    <Navbar title="Transaksi">
+    <Navbar title="Surat Jalan">
       <div className="rounded-3 bg-white p-4 pb-2">
         <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
-          <h1 className="h4">Daftar Transaksi</h1>
+          <h1 className="h4">Daftar Surat Jalan</h1>
           <div className="btn-toolbar mb-2 mb-md-0">
             <Link to={"/transaksi/tambah_transaksi"}>
               <Button color={"primary"}>
                 <FaPlus className="fs-6 mb-1" style={{ marginRight: "10px" }} />
-                Tambah Transaksi
+                Tambah Surat Jalan
               </Button>
             </Link>
           </div>

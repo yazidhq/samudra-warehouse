@@ -123,7 +123,7 @@ const DashboardPage = () => {
         <>
           <div className="mt-4">
             <div className="rounded-3 bg-white p-4">
-              <p className="h4 mb-3 fw-bold text-primary">Transaksi Keluar</p>
+              <p className="h4 mb-3 fw-bold text-primary">Jumlah Surat Jalan</p>
               <hr />
               <BarChart
                 selectedYear={selectedYear ? selectedYear : 2024}

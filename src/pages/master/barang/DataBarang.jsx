@@ -105,7 +105,7 @@ const DataBarang = () => {
   record.sort((a, b) => b.kode_barang.localeCompare(a.kode_barang));
 
   return (
-    <Navbar title="Item">
+    <Navbar title="Stok Barang">
       {record.map((row) => (
         <div
           className="modal fade"
@@ -122,7 +122,7 @@ const DataBarang = () => {
                   className="modal-title fs-5"
                   id={`historyModalLabel${row.id}`}
                 >
-                  Product's History
+                  Histori Barang
                 </h1>
               </div>
               <div className="modal-body">
@@ -155,12 +155,12 @@ const DataBarang = () => {
 
       <div className="rounded-3 bg-white p-4 pb-2">
         <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
-          <h1 className="h4">Daftar Item</h1>
+          <h1 className="h4">Daftar Stok Barang</h1>
           <div className="btn-toolbar mb-2 mb-md-0">
             <Link to={"/barang/tambah_barang"}>
               <Button color={"primary"}>
                 <FaPlus className="fs-6 mb-1" style={{ marginRight: "10px" }} />
-                Tambah Item
+                Tambah Stok
               </Button>
             </Link>
           </div>

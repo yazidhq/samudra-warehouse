@@ -46,7 +46,7 @@ const BarChart = ({ selectedYear, data }) => {
         labels: yearData && yearData.map((row) => row.monthWord),
         datasets: [
           {
-            label: "Total Transaksi",
+            label: "Total Surat Jalan",
             data: yearData && yearData.map((row) => Math.round(row.count)),
             backgroundColor: "#dc3530",
             barPercentage: 0.5,
@@ -97,7 +97,7 @@ const BarChart = ({ selectedYear, data }) => {
               <div className="modal-header d-flex justify-content-between">
                 <h5 className="modal-title">{selectedBar.monthWord}</h5>
                 <h5 className="modal-title">
-                  {Math.round(selectedBar.count)} Transaksi
+                  {Math.round(selectedBar.count)} Surat Jalan
                 </h5>
               </div>
               <div className="modal-body">

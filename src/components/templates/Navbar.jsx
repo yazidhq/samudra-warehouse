@@ -83,7 +83,7 @@ const Navbar = ({ children, title }) => {
                           to={"/barang"}
                         >
                           <FaDatabase className="fs-5" />
-                          Master
+                          Stok Barang
                         </Link>
                       </li>
                       <li
@@ -102,7 +102,7 @@ const Navbar = ({ children, title }) => {
                           to={"/transaksi"}
                         >
                           <IoNewspaper className="fs-5" />
-                          Transaksi
+                          Surat Jalan
                         </Link>
                       </li>
                     </div>

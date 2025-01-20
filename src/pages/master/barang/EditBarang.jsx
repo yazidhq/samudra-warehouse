@@ -46,7 +46,7 @@ const EditBarang = () => {
   }
 
   return (
-    <Navbar title="Edit Item">
+    <Navbar title="Edit Barang">
       <form onSubmit={(e) => handleUpdate(e, id)}>
         <div className="rounded-3 bg-white p-4 pb-2">
           <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">

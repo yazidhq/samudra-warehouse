@@ -30,11 +30,11 @@ const EditTransaksi = () => {
   }
 
   return (
-    <Navbar title="Item">
+    <Navbar title="Edit Surat Jalan">
       <form onSubmit={(e) => handleUpdate(e, id)}>
         <div className="rounded-3 bg-white p-4 pb-2">
           <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center">
-            <h1 className="h4">Detail Transaksi</h1>
+            <h1 className="h4">Form Edit Surat Jalan</h1>
             <div className="btn-toolbar mb-2 mb-md-0">
               <Link to={`/transaksi/${currentTransaction.id}/item_transaksi`}>
                 <Button color={"primary"}>
