@@ -12,12 +12,17 @@ import Swal from "sweetalert2";
 import { useRef } from "react";
 
 const ItemTransaksi = () => {
-  const { product, type } = useProduct();
+  const { product, fetchProducts, type, fetchType } = useProduct();
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedType, setSelectedType] = useState("");
   const [transactionItem, setTransactionItem] = useState([]);
   const { id } = useParams();
   const formRef = useRef(null);
+
+  useEffect(() => {
+    fetchProducts();
+    fetchType();
+  }, []);
 
   const handleCreateItem = async (e) => {
     e.preventDefault();
@@ -181,10 +186,10 @@ const ItemTransaksi = () => {
       record.push({
         id: v.id,
         kode_barang: v.productCode || "No productCode",
-        nama_barang: v.product.name || "No Name",
-        jenis_barang: v.product.type.name || "No Type",
+        nama_barang: v.product?.name || "No Name",
+        jenis_barang: v.product?.type.name || "No Type",
         unit_size:
-          v.product.unit_size.name + " " + v.product.unit.name || "No Size",
+          v.product?.unit_size?.name + " " + v.product?.unit?.name || "No Size",
         kuantitas: v.quantity || "No quantity",
       });
     }
